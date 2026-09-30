@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: movie-matcher-mongo
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - movie-net
+
+  # Redis Cache & BullMQ Message Broker
+  redis:
+    image: redis:7.2-alpine
+    container_name: movie-matcher-redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    networks:
+      - movie-net
+
+  # NestJS Movie API Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: movie-matcher-backend
+    restart: unless-stopped
+    ports:
+      - '4000:4000'
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - FRONTEND_URL=http://localhost:3000
+      - MONGODB_URI=mongodb://mongodb:27017/ai-movie-matcher
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_ACCESS_SECRET=super_secret_jwt_access_key_ai_movie_matcher_2026_dev
+      - JWT_REFRESH_SECRET=super_secret_jwt_refresh_key_ai_movie_matcher_2026_dev
+      - TMDB_ACCESS_TOKEN=${TMDB_ACCESS_TOKEN}
+      - TMDB_API_KEY=${TMDB_API_KEY}
+      - AI_PLATFORM_URL=${AI_PLATFORM_URL:-http://localhost:5000}
+      - AI_PLATFORM_API_KEY=${AI_PLATFORM_API_KEY:-platform_master_key_dev_12345}
+      - NOTIFICATION_SERVICE_URL=${NOTIFICATION_SERVICE_URL:-http://localhost:3001}
+      - NOTIFICATION_SERVICE_API_KEY=${NOTIFICATION_SERVICE_API_KEY:-notification_service_api_key_12345}
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - movie-net
+
+  # Next.js Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: movie-matcher-frontend
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://localhost:4000/api/v1
+    depends_on:
+      - backend
+    networks:
+      - movie-net
+
+networks:
+  movie-net:
+    driver: bridge
+
+volumes:
+  mongo_data:
+  redis_data:
