@@ -27,6 +27,7 @@ export interface EnvironmentVariables {
   THROTTLE_LIMIT: number;
   THROTTLE_AI_LIMIT: number;
   THROTTLE_AUTH_LIMIT: number;
+  PUBLIC_ACCESS_ENABLED?: string;
 }
 
 export default () => ({
@@ -35,6 +36,7 @@ export default () => ({
   appName: process.env.APP_NAME || 'ai-movie-matcher',
   applicationId: process.env.APPLICATION_ID || 'ai-movie-matcher',
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:3000',
+  publicAccessEnabled: process.env.PUBLIC_ACCESS_ENABLED !== 'false',
   jwt: {
     accessSecret:
       process.env.JWT_ACCESS_SECRET ||

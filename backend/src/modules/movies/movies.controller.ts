@@ -7,14 +7,14 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { MoviesService } from './movies.service';
-import { Public } from '../../common/decorators/public.decorator';
+import { OptionalAuth } from '../../common/decorators/optional-auth.decorator';
 
 @ApiTags('Movies')
+@OptionalAuth()
 @Controller('api/v1/movies')
 export class MoviesController {
   constructor(private readonly moviesService: MoviesService) {}
 
-  @Public()
   @Get('trending')
   @ApiOperation({ summary: 'Get trending movies (day or week)' })
   @ApiQuery({ name: 'timeWindow', enum: ['day', 'week'], required: false })
@@ -27,7 +27,6 @@ export class MoviesController {
     return this.moviesService.getTrending(timeWindow || 'week', pageNum);
   }
 
-  @Public()
   @Get('popular')
   @ApiOperation({ summary: 'Get popular movies' })
   @ApiQuery({ name: 'page', type: Number, required: false })
@@ -36,7 +35,6 @@ export class MoviesController {
     return this.moviesService.getPopular(pageNum);
   }
 
-  @Public()
   @Get('top-rated')
   @ApiOperation({ summary: 'Get top rated movies' })
   @ApiQuery({ name: 'page', type: Number, required: false })
@@ -45,7 +43,6 @@ export class MoviesController {
     return this.moviesService.getTopRated(pageNum);
   }
 
-  @Public()
   @Get('upcoming')
   @ApiOperation({ summary: 'Get upcoming movies' })
   @ApiQuery({ name: 'page', type: Number, required: false })
@@ -54,14 +51,12 @@ export class MoviesController {
     return this.moviesService.getUpcoming(pageNum);
   }
 
-  @Public()
   @Get('genres')
   @ApiOperation({ summary: 'Get list of official movie genres' })
   async getGenres() {
     return this.moviesService.getGenres();
   }
 
-  @Public()
   @Get('search')
   @ApiOperation({ summary: 'Search movies by title/keyword' })
   @ApiQuery({ name: 'q', type: String, required: true })
@@ -80,7 +75,6 @@ export class MoviesController {
     });
   }
 
-  @Public()
   @Get('discover')
   @ApiOperation({ summary: 'Discover movies with multi-criteria filters' })
   @ApiQuery({ name: 'genreId', type: Number, required: false })
@@ -107,21 +101,18 @@ export class MoviesController {
     });
   }
 
-  @Public()
   @Get(':id')
   @ApiOperation({ summary: 'Get full movie details, credits, and videos' })
   async getMovieDetails(@Param('id', ParseIntPipe) id: number) {
     return this.moviesService.getMovieDetails(id);
   }
 
-  @Public()
   @Get(':id/credits')
   @ApiOperation({ summary: 'Get movie cast and crew credits' })
   async getMovieCredits(@Param('id', ParseIntPipe) id: number) {
     return this.moviesService.getMovieCredits(id);
   }
 
-  @Public()
   @Get(':id/similar')
   @ApiOperation({ summary: 'Get similar movies' })
   @ApiQuery({ name: 'page', type: Number, required: false })

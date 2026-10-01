@@ -26,12 +26,13 @@ export class RecommendationsService {
   ) {}
 
   async getRecommendations(
-    userId: string,
+    userId?: string,
     refresh: boolean = false,
     limit: number = 10,
     customWeights?: Partial<ScoringWeights>,
   ) {
-    const cacheKey = `recommendations:${userId}:${limit}`;
+    const effectiveUserId = userId || 'anonymous';
+    const cacheKey = `recommendations:${effectiveUserId}:${limit}`;
 
     if (!refresh) {
       const cached = await this.redisService.get(cacheKey);
@@ -40,18 +41,26 @@ export class RecommendationsService {
 
     // Generate fresh recommendations
     const { recommendations, weights } =
-      await this.engine.generateRecommendations(userId, limit, customWeights);
+      await this.engine.generateRecommendations(effectiveUserId, limit, customWeights);
 
-    // Save to database
-    const savedDoc = await this.recommendationModel.create({
-      userId,
-      source: RecommendationSource.AI_HYBRID,
-      recommendations,
-      scoringWeights: weights,
-    });
+    let docId = 'anonymous-recommendations';
+    if (effectiveUserId !== 'anonymous') {
+      try {
+        // Save to database
+        const savedDoc = await this.recommendationModel.create({
+          userId: effectiveUserId,
+          source: RecommendationSource.AI_HYBRID,
+          recommendations,
+          scoringWeights: weights,
+        });
+        docId = (savedDoc as any)._id.toString();
+      } catch (err: any) {
+        this.logger.warn(`Could not persist recommendation doc: ${err.message}`);
+      }
+    }
 
     const result = {
-      id: (savedDoc as any)._id.toString(),
+      id: docId,
       recommendations,
       weights,
       generatedAt: new Date().toISOString(),

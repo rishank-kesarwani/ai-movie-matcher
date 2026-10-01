@@ -8,11 +8,12 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { AiAssistantService, AssistantChatDto } from './ai-assistant.service';
 import { AiSemanticSearchService } from './ai-semantic-search.service';
 import { AiCostTrackerService } from './ai-cost-tracker.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
-import { OptionalJwtAuthGuard } from '../../common/guards/optional-jwt-auth.guard';
+import { OptionalAuth } from '../../common/decorators/optional-auth.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { AuthUser } from '../../common/interfaces/auth-user.interface';
 import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
@@ -40,21 +41,21 @@ export class AiController {
     private readonly costTracker: AiCostTrackerService,
   ) {}
 
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
+  @OptionalAuth()
   @Post('chat')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 15, ttl: 60000 } })
   @ApiOperation({
     summary: 'Chat with CineMatch AI movie assistant via shared AI Platform',
   })
   async chat(
-    @CurrentUser() user: AuthUser,
+    @CurrentUser() user: AuthUser | null,
     @Body() dto: ChatRequestDto,
   ) {
-    return this.assistantService.chat(user.userId, dto);
+    return this.assistantService.chat(user?.userId, dto);
   }
 
-  @UseGuards(OptionalJwtAuthGuard)
+  @OptionalAuth()
   @Post('semantic-search')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({

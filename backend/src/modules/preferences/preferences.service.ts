@@ -16,7 +16,19 @@ export class PreferencesService {
     private readonly preferenceModel: Model<UserPreferenceDocument>,
   ) {}
 
-  async getPreferences(userId: string): Promise<UserPreferenceDocument> {
+  async getPreferences(userId?: string): Promise<UserPreferenceDocument | UserPreference> {
+    if (!userId || userId === 'anonymous') {
+      return {
+        userId: 'anonymous',
+        favoriteGenres: [878, 12, 18],
+        dislikedGenres: [],
+        favoriteDirectors: ['Christopher Nolan', 'Denis Villeneuve'],
+        favoriteActors: ['Leonardo DiCaprio', 'Matthew McConaughey'],
+        preferredLanguages: ['en'],
+        minimumRating: 7.0,
+      } as any;
+    }
+
     let prefs = await this.preferenceModel.findOne({ userId }).exec();
     if (!prefs) {
       prefs = await this.preferenceModel.create({

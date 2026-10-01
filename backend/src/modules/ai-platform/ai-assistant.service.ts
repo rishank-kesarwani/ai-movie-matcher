@@ -28,9 +28,10 @@ export class AiAssistantService {
   }
 
   async chat(
-    userId: string,
+    userId: string | undefined,
     dto: AssistantChatDto,
   ): Promise<ChatResponse & { enrichedMovies?: any[] }> {
+    const effectiveUserId = userId || 'anonymous';
     const startTime = Date.now();
 
     const systemPrompt: ChatMessage = {
@@ -50,7 +51,7 @@ Your mission:
 
     const result = await this.aiClient.chat({
       applicationId: this.applicationId,
-      userId,
+      userId: effectiveUserId,
       messages: messagesWithSystem,
       useRag: dto.useRag !== false,
       temperature: 0.7,
@@ -58,7 +59,7 @@ Your mission:
 
     const durationMs = Date.now() - startTime;
     this.costTracker.trackUsage({
-      userId,
+      userId: effectiveUserId,
       endpoint: '/api/v1/ai/chat',
       model: result.model || 'gemini-1.5-pro',
       promptTokens: result.usage?.promptTokens || 150,
