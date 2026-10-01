@@ -5,9 +5,20 @@ import { Navbar } from '../components/layout/Navbar';
 import { Footer } from '../components/layout/Footer';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL || 'https://cinematch.rishankkesarwani.com',
+  ),
   title: 'CineMatch AI — Intelligent Movie Matcher & Recommender',
   description:
     'Discover films you will genuinely love with state-of-the-art hybrid AI matching, vector semantic search, explainable recommendations, and conversational movie intelligence.',
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
   keywords: [
     'AI Movie Matcher',
     'Movie Recommendations',
@@ -22,6 +33,7 @@ export const metadata: Metadata = {
     description:
       'Discover films with hybrid AI recommendation scoring and conversational film assistant.',
     type: 'website',
+    images: [{ url: '/logo.svg', width: 512, height: 512, alt: 'CineMatch AI' }],
   },
 };
 
