@@ -13,16 +13,31 @@ import { NotificationsModule } from '../notifications/notifications.module';
   imports: [
     BullModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        connection: {
-          host: configService.get<string>('redis.host', 'localhost'),
-          port: configService.get<number>('redis.port', 6379),
-          password: configService.get<string>('redis.password') || undefined,
-          db: configService.get<number>('redis.db', 0),
-          maxRetriesPerRequest: null,
-          enableReadyCheck: false,
-        },
-      }),
+      useFactory: (configService: ConfigService) => {
+        const redisUrl = configService.get<string>('redis.url');
+        if (
+          redisUrl &&
+          (redisUrl.startsWith('redis://') || redisUrl.startsWith('rediss://'))
+        ) {
+          return {
+            connection: {
+              url: redisUrl,
+              maxRetriesPerRequest: null,
+              enableReadyCheck: false,
+            },
+          };
+        }
+        return {
+          connection: {
+            host: configService.get<string>('redis.host', 'localhost'),
+            port: configService.get<number>('redis.port', 6379),
+            password: configService.get<string>('redis.password') || undefined,
+            db: configService.get<number>('redis.db', 0),
+            maxRetriesPerRequest: null,
+            enableReadyCheck: false,
+          },
+        };
+      },
     }),
     BullModule.registerQueue(
       { name: QUEUES.RECOMMENDATION },

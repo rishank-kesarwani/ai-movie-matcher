@@ -14,7 +14,7 @@ async function bootstrap() {
   });
 
   const configService = app.get(ConfigService);
-  const port = configService.get<number>('port', 4000);
+  const port = Number(process.env.PORT) || configService.get<number>('port', 4000);
   const frontendUrl = configService.get<string>('frontendUrl', 'http://localhost:3000');
   const nodeEnv = configService.get<string>('nodeEnv', 'development');
 
@@ -27,13 +27,31 @@ async function bootstrap() {
   );
   app.use(compression());
 
-  // CORS Configuration
+  // CORS Configuration supporting Vercel production, preview deployments, and local dev
+  const allowedOrigins = [
+    frontendUrl,
+    'https://movie-matcher.rishankkesarwani.com',
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+  ].filter(Boolean);
+
   app.enableCors({
-    origin: [
-      frontendUrl,
-      'http://localhost:3000',
-      'http://127.0.0.1:3000',
-    ],
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g., server-to-server, curl, health probes)
+      if (!origin) return callback(null, true);
+
+      const isAllowed =
+        allowedOrigins.includes(origin) ||
+        origin.endsWith('.vercel.app') ||
+        origin.endsWith('.rishankkesarwani.com');
+
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        logger.warn(`CORS blocked request from origin: ${origin}`);
+        callback(new Error(`Origin ${origin} not allowed by CORS`));
+      }
+    },
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
@@ -89,9 +107,9 @@ async function bootstrap() {
     },
   });
 
-  await app.listen(port);
-  logger.log(`🎬 AI Movie Matcher Backend running on http://localhost:${port} [${nodeEnv}]`);
-  logger.log(`📚 Swagger Docs available at http://localhost:${port}/api/docs`);
+  await app.listen(port, '0.0.0.0');
+  logger.log(`🎬 AI Movie Matcher Backend running on http://0.0.0.0:${port} [${nodeEnv}]`);
+  logger.log(`📚 Swagger Docs available at http://0.0.0.0:${port}/api/docs`);
 }
 
 bootstrap();

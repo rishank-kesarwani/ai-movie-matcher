@@ -36,7 +36,10 @@ export class RedisService implements OnModuleDestroy {
         options.db = db;
       }
 
-      if (redisUrl && redisUrl.startsWith('redis://')) {
+      if (
+        redisUrl &&
+        (redisUrl.startsWith('redis://') || redisUrl.startsWith('rediss://'))
+      ) {
         this.client = new Redis(redisUrl, options);
       } else {
         this.client = new Redis({
