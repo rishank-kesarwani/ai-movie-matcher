@@ -27,8 +27,10 @@ import { AiPlatformModule } from './modules/ai-platform/ai-platform.module';
 import { RecommendationsModule } from './modules/recommendations/recommendations.module';
 import { QueuesModule } from './modules/queues/queues.module';
 import { HealthModule } from './modules/health/health.module';
+import { AppController } from './app.controller';
 
 @Module({
+  controllers: [AppController],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
