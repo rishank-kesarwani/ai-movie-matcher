@@ -9,7 +9,7 @@ import { MovieHeroCarousel } from '../components/movies/MovieHeroCarousel';
 import { MovieGrid } from '../components/movies/MovieGrid';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { ErrorState } from '../components/ui/ErrorState';
-import { Sparkles, TrendingUp, Star, Calendar, ArrowRight, Bot, Compass } from 'lucide-react';
+import { Sparkles, TrendingUp, Star, Calendar, ArrowRight, Bot, Compass, Flame } from 'lucide-react';
 
 export default function HomePage() {
   const {
@@ -21,6 +21,17 @@ export default function HomePage() {
     queryKey: ['movies', 'trending'],
     queryFn: async () => {
       const res: any = await apiClient.get('/movies/trending?timeWindow=week');
+      return res.data || res;
+    },
+  });
+
+  const {
+    data: bollywoodData,
+    isLoading: isBollywoodLoading,
+  } = useQuery<{ results: Movie[] }>({
+    queryKey: ['movies', 'bollywood'],
+    queryFn: async () => {
+      const res: any = await apiClient.get('/movies/bollywood');
       return res.data || res;
     },
   });
@@ -73,6 +84,7 @@ export default function HomePage() {
   }
 
   const trendingMovies = trendingData?.results || [];
+  const bollywoodMovies = bollywoodData?.results?.slice(0, 5) || [];
   const popularMovies = popularData?.results?.slice(0, 5) || [];
   const topRatedMovies = topRatedData?.results?.slice(0, 5) || [];
   const upcomingMovies = upcomingData?.results?.slice(0, 5) || [];
@@ -121,6 +133,41 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
+      </section>
+
+      {/* Trending in Bollywood & Indian Cinema Section */}
+      <section className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2.5">
+            <div className="w-8 h-8 rounded-xl bg-orange-500/20 flex items-center justify-center text-orange-400 border border-orange-500/30">
+              <Flame className="w-4 h-4 text-orange-400 fill-orange-400" />
+            </div>
+            <div>
+              <div className="flex items-center space-x-2">
+                <h2 className="text-xl font-extrabold text-white tracking-tight">
+                  Trending in Bollywood & Indian Cinema
+                </h2>
+                <span className="hidden sm:inline-block px-2 py-0.5 rounded-full bg-orange-500/10 border border-orange-500/30 text-orange-300 text-[10px] font-bold">
+                  🇮🇳 Hindi & Regional
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <Link
+            href="/movies?language=hi"
+            className="flex items-center space-x-1 text-xs font-semibold text-orange-400 hover:text-orange-300 transition-colors"
+          >
+            <span>Explore All Indian Cinema</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        {isBollywoodLoading ? (
+          <LoadingSpinner message="Curating trending Bollywood & Indian cinema..." />
+        ) : (
+          <MovieGrid movies={bollywoodMovies} />
+        )}
       </section>
 
       {/* Popular Movies Section */}

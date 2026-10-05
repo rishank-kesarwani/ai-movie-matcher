@@ -47,6 +47,7 @@ export interface MovieDto {
   popularity: number;
   genreIds: number[];
   genres?: GenreDto[];
+  originalLanguage?: string;
   adult?: boolean;
 }
 
@@ -71,6 +72,8 @@ export interface MovieSearchFilterDto {
   year?: number;
   minRating?: number;
   maxRuntime?: number;
+  withOriginalLanguage?: string; // e.g. 'hi', 'te', 'ta', 'ko', 'ja', 'es', 'fr', 'en'
+  region?: string;               // e.g. 'IN', 'US', 'KR', 'JP'
   sortBy?:
     | 'popularity.desc'
     | 'vote_average.desc'
@@ -101,10 +104,17 @@ export interface MovieProvider {
   getTrendingMovies(
     timeWindow?: 'day' | 'week',
     page?: number,
+    region?: string,
   ): Promise<PaginatedMovieResultDto>;
-  getPopularMovies(page?: number): Promise<PaginatedMovieResultDto>;
+  getPopularMovies(
+    page?: number,
+    region?: string,
+  ): Promise<PaginatedMovieResultDto>;
   getTopRatedMovies(page?: number): Promise<PaginatedMovieResultDto>;
-  getUpcomingMovies(page?: number): Promise<PaginatedMovieResultDto>;
+  getUpcomingMovies(
+    page?: number,
+    region?: string,
+  ): Promise<PaginatedMovieResultDto>;
   discoverMovies(
     filter: MovieSearchFilterDto,
   ): Promise<PaginatedMovieResultDto>;

@@ -11,7 +11,7 @@ import {
   PaginatedMovieResultDto,
 } from '../interfaces/movie-provider.interface';
 
-// Curated high-fidelity fallback dataset for offline resilience, testing, and dev without TMDB keys
+// Curated high-fidelity worldwide & Bollywood fallback dataset for offline resilience, testing, and dev
 const FALLBACK_GENRES: GenreDto[] = [
   { id: 28, name: 'Action' },
   { id: 12, name: 'Adventure' },
@@ -36,6 +36,90 @@ const FALLBACK_GENRES: GenreDto[] = [
 
 const FALLBACK_MOVIES: MovieDetailDto[] = [
   {
+    id: 20453,
+    title: '3 Idiots',
+    originalTitle: '3 Idiots',
+    overview:
+      'In the prestigious Imperial College of Engineering, two friends embark on a quest for a lost buddy while reliving their college days and recalling the inspiring memories of their unconventional friend Rancho who challenged the rigid Indian educational system.',
+    posterPath: '/66A9MqXOyVFCssoloscw79z89ew.jpg',
+    backdropPath: '/u7i3Q2hT2jK75jR968a3X5dK.jpg',
+    releaseDate: '2009-12-23',
+    voteAverage: 8.0,
+    voteCount: 1650,
+    popularity: 115.4,
+    genreIds: [35, 18],
+    genres: [
+      { id: 35, name: 'Comedy' },
+      { id: 18, name: 'Drama' },
+    ],
+    originalLanguage: 'hi',
+    runtime: 170,
+    tagline: 'Don\'t pursue success. Pursue excellence, and success will chase you pants down.',
+    status: 'Released',
+    director: 'Rajkumar Hirani',
+    castMembers: ['Aamir Khan', 'R. Madhavan', 'Sharman Joshi', 'Kareena Kapoor Khan', 'Boman Irani'],
+    credits: {
+      cast: [
+        { id: 52331, name: 'Aamir Khan', character: 'Ranchhoddas Shamaldas Chhanchad / Phunsukh Wangdu', order: 0 },
+        { id: 84433, name: 'R. Madhavan', character: 'Farhan Qureshi', order: 1 },
+        { id: 84434, name: 'Sharman Joshi', character: 'Raju Rastogi', order: 2 },
+        { id: 35742, name: 'Kareena Kapoor Khan', character: 'Pia Sahastrabuddhe', order: 3 },
+      ],
+      crew: [{ id: 52332, name: 'Rajkumar Hirani', job: 'Director', department: 'Directing' }],
+      director: { id: 52332, name: 'Rajkumar Hirani', job: 'Director', department: 'Directing' },
+    },
+  },
+  {
+    id: 360814,
+    title: 'Dangal',
+    originalTitle: 'दंगल',
+    overview:
+      'Former wrestler Mahavir Singh Phogat and his two wrestler daughters struggle towards glory at the Commonwealth Games in the face of societal oppression and triumph against all odds to win India\'s first gold in women\'s wrestling.',
+    posterPath: '/50596k9L0w4e1FfC3y73A6vK.jpg',
+    backdropPath: '/jE5o7yd1nF7y6p01.jpg',
+    releaseDate: '2016-12-23',
+    voteAverage: 8.03,
+    voteCount: 1200,
+    popularity: 98.7,
+    genreIds: [18, 28, 10751],
+    genres: [
+      { id: 18, name: 'Drama' },
+      { id: 28, name: 'Action' },
+      { id: 10751, name: 'Family' },
+    ],
+    originalLanguage: 'hi',
+    runtime: 161,
+    tagline: 'Gold is gold, whether won by a boy or a girl.',
+    status: 'Released',
+    director: 'Nitesh Tiwari',
+    castMembers: ['Aamir Khan', 'Fatima Sana Shaikh', 'Sanya Malhotra', 'Sakshi Tanwar'],
+  },
+  {
+    id: 579974,
+    title: 'RRR',
+    originalTitle: 'రౌద్రం రణం రుధిరం',
+    overview:
+      'A fearless revolutionary and an officer in the British force, who once shared a deep bond, decide to join forces and embark on an epic journey of fierce rebellion against the tyrannical British Raj in 1920s India.',
+    posterPath: '/kdPMumJzyYAc4roD52qavX0nUR3.jpg',
+    backdropPath: '/707thQOzSnOP5Q7n5p6.jpg',
+    releaseDate: '2022-03-24',
+    voteAverage: 7.8,
+    voteCount: 1540,
+    popularity: 135.2,
+    genreIds: [28, 18, 12],
+    genres: [
+      { id: 28, name: 'Action' },
+      { id: 18, name: 'Drama' },
+      { id: 12, name: 'Adventure' },
+    ],
+    originalLanguage: 'te',
+    runtime: 187,
+    tagline: 'Rise, Roar, Revolt.',
+    status: 'Released',
+    director: 'S.S. Rajamouli',
+    castMembers: ['N.T. Rama Rao Jr.', 'Ram Charan', 'Alia Bhatt', 'Ajay Devgn'],
+  },
+  {
     id: 157336,
     title: 'Interstellar',
     originalTitle: 'Interstellar',
@@ -53,162 +137,12 @@ const FALLBACK_MOVIES: MovieDetailDto[] = [
       { id: 18, name: 'Drama' },
       { id: 878, name: 'Science Fiction' },
     ],
+    originalLanguage: 'en',
     runtime: 169,
     tagline: 'Mankind was born on Earth. It was never meant to die here.',
     status: 'Released',
     director: 'Christopher Nolan',
     castMembers: ['Matthew McConaughey', 'Anne Hathaway', 'Jessica Chastain', 'Michael Caine'],
-    credits: {
-      cast: [
-        { id: 10297, name: 'Matthew McConaughey', character: 'Joseph Cooper', order: 0 },
-        { id: 1813, name: 'Anne Hathaway', character: 'Dr. Amelia Brand', order: 1 },
-        { id: 83002, name: 'Jessica Chastain', character: 'Murphy Cooper', order: 2 },
-      ],
-      crew: [{ id: 525, name: 'Christopher Nolan', job: 'Director', department: 'Directing' }],
-      director: { id: 525, name: 'Christopher Nolan', job: 'Director', department: 'Directing' },
-    },
-  },
-  {
-    id: 27205,
-    title: 'Inception',
-    originalTitle: 'Inception',
-    overview:
-      'Cobb, a skilled thief who commits corporate espionage by infiltrating the subconscious of his targets is offered a chance to regain his old life as payment for a task considered to be impossible: "inception", the implantation of another person\'s idea into a target\'s subconscious.',
-    posterPath: '/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg',
-    backdropPath: '/8ZTVqvKDQ8emSGUEMjsS4yHAwrp.jpg',
-    releaseDate: '2010-07-15',
-    voteAverage: 8.36,
-    voteCount: 35800,
-    popularity: 132.4,
-    genreIds: [28, 12, 878],
-    genres: [
-      { id: 28, name: 'Action' },
-      { id: 12, name: 'Adventure' },
-      { id: 878, name: 'Science Fiction' },
-    ],
-    runtime: 148,
-    tagline: 'Your mind is the scene of the crime.',
-    status: 'Released',
-    director: 'Christopher Nolan',
-    castMembers: ['Leonardo DiCaprio', 'Joseph Gordon-Levitt', 'Elliot Page', 'Tom Hardy'],
-  },
-  {
-    id: 693134,
-    title: 'Dune: Part Two',
-    originalTitle: 'Dune: Part Two',
-    overview:
-      'Follow the mythic journey of Paul Atreides as he unites with Chani and the Fremen while on a path of revenge against the conspirators who destroyed his family. Facing a choice between the love of his life and the fate of the universe, he endeavors to prevent a terrible future only he can foresee.',
-    posterPath: '/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg',
-    backdropPath: '/xOMo8BRK7PfcJv9JCnx7s5200fr.jpg',
-    releaseDate: '2024-02-27',
-    voteAverage: 8.18,
-    voteCount: 5200,
-    popularity: 210.5,
-    genreIds: [878, 12],
-    genres: [
-      { id: 878, name: 'Science Fiction' },
-      { id: 12, name: 'Adventure' },
-    ],
-    runtime: 166,
-    tagline: 'Long live the fighters.',
-    status: 'Released',
-    director: 'Denis Villeneuve',
-    castMembers: ['Timothée Chalamet', 'Zendaya', 'Rebecca Ferguson', 'Javier Bardem'],
-  },
-  {
-    id: 335984,
-    title: 'Blade Runner 2049',
-    originalTitle: 'Blade Runner 2049',
-    overview:
-      'Thirty years after the events of the first film, a new blade runner, LAPD Officer K, unearths a long-buried secret that has the potential to plunge what\'s left of society into chaos. K\'s discovery leads him on a quest to find Rick Deckard, a former LAPD blade runner who has been missing for 30 years.',
-    posterPath: '/gajva2L0rPYkEWjzgFlBXCAVBE5.jpg',
-    backdropPath: '/sAtoMqDVhNDQBc3QJL3RF6hlxGq.jpg',
-    releaseDate: '2017-10-04',
-    voteAverage: 8.0,
-    voteCount: 13200,
-    popularity: 98.2,
-    genreIds: [878, 18, 9648],
-    genres: [
-      { id: 878, name: 'Science Fiction' },
-      { id: 18, name: 'Drama' },
-      { id: 9648, name: 'Mystery' },
-    ],
-    runtime: 164,
-    tagline: 'The key to the future is finally unearthed.',
-    status: 'Released',
-    director: 'Denis Villeneuve',
-    castMembers: ['Ryan Gosling', 'Harrison Ford', 'Ana de Armas', 'Sylvia Hoeks'],
-  },
-  {
-    id: 329865,
-    title: 'Arrival',
-    originalTitle: 'Arrival',
-    overview:
-      'Taking place after alien spacecraft touch down across the globe, an elite team is put together to investigate, including language professor Louise Banks, who is tasked with interpreting the language of the apparent peace-seeking alien visitors.',
-    posterPath: '/x2O0hv9t4qMvE6Q1Qz3kK2V7d9P.jpg',
-    backdropPath: '/yNsA0fO3hY0hZ3G2sJ6t7V9x1.jpg',
-    releaseDate: '2016-11-10',
-    voteAverage: 7.9,
-    voteCount: 17100,
-    popularity: 88.6,
-    genreIds: [18, 878, 9648],
-    genres: [
-      { id: 18, name: 'Drama' },
-      { id: 878, name: 'Science Fiction' },
-      { id: 9648, name: 'Mystery' },
-    ],
-    runtime: 116,
-    tagline: 'Why are they here?',
-    status: 'Released',
-    director: 'Denis Villeneuve',
-    castMembers: ['Amy Adams', 'Jeremy Renner', 'Forest Whitaker', 'Michael Stuhlbarg'],
-  },
-  {
-    id: 545611,
-    title: 'Everything Everywhere All at Once',
-    originalTitle: 'Everything Everywhere All at Once',
-    overview:
-      'An aging Chinese immigrant is swept up in an insane adventure, where she alone can save what\'s important to her by connecting with the lives she could have led in other universes.',
-    posterPath: '/w3LxiVYPq6ABG8dwsm7H84R6L3B.jpg',
-    backdropPath: '/fOy2Jurz9larw4UVl0607nL37mG.jpg',
-    releaseDate: '2022-03-24',
-    voteAverage: 7.82,
-    voteCount: 6100,
-    popularity: 94.7,
-    genreIds: [28, 12, 878],
-    genres: [
-      { id: 28, name: 'Action' },
-      { id: 12, name: 'Adventure' },
-      { id: 878, name: 'Science Fiction' },
-    ],
-    runtime: 139,
-    tagline: 'The universe is so much bigger than you realize.',
-    status: 'Released',
-    director: 'Daniel Kwan, Daniel Scheinert',
-    castMembers: ['Michelle Yeoh', 'Ke Huy Quan', 'Stephanie Hsu', 'Jamie Lee Curtis'],
-  },
-  {
-    id: 872585,
-    title: 'Oppenheimer',
-    originalTitle: 'Oppenheimer',
-    overview:
-      'The story of J. Robert Oppenheimer’s role in the development of the atomic bomb during World War II.',
-    posterPath: '/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg',
-    backdropPath: '/rLb2cwF3Pazuxaj0sRXQ037tGI1.jpg',
-    releaseDate: '2023-07-19',
-    voteAverage: 8.09,
-    voteCount: 8900,
-    popularity: 180.2,
-    genreIds: [18, 36],
-    genres: [
-      { id: 18, name: 'Drama' },
-      { id: 36, name: 'History' },
-    ],
-    runtime: 181,
-    tagline: 'The world forever changes.',
-    status: 'Released',
-    director: 'Christopher Nolan',
-    castMembers: ['Cillian Murphy', 'Emily Blunt', 'Matt Damon', 'Robert Downey Jr.'],
   },
   {
     id: 496243,
@@ -228,36 +162,12 @@ const FALLBACK_MOVIES: MovieDetailDto[] = [
       { id: 53, name: 'Thriller' },
       { id: 18, name: 'Drama' },
     ],
+    originalLanguage: 'ko',
     runtime: 133,
     tagline: 'Act like you own the place.',
     status: 'Released',
     director: 'Bong Joon-ho',
     castMembers: ['Song Kang-ho', 'Lee Sun-kyun', 'Cho Yeo-jeong', 'Choi Woo-shik'],
-  },
-  {
-    id: 155,
-    title: 'The Dark Knight',
-    originalTitle: 'The Dark Knight',
-    overview:
-      'Batman raises the stakes in his war on crime. With the help of Lt. Jim Gordon and District Attorney Harvey Dent, Batman sets out to dismantle the remaining criminal organizations that plague the streets. The partnership proves to be effective, but they soon find themselves prey to a reign of chaos unleashed by a rising criminal mastermind known to the terrified citizens of Gotham as the Joker.',
-    posterPath: '/qJ2tW6WMUDux911r6m7haRef0WH.jpg',
-    backdropPath: '/nMKdUUepR0i5zn0y1T4CsSB5chy.jpg',
-    releaseDate: '2008-07-16',
-    voteAverage: 8.51,
-    voteCount: 32000,
-    popularity: 130.0,
-    genreIds: [18, 28, 80, 53],
-    genres: [
-      { id: 18, name: 'Drama' },
-      { id: 28, name: 'Action' },
-      { id: 80, name: 'Crime' },
-      { id: 53, name: 'Thriller' },
-    ],
-    runtime: 152,
-    tagline: 'Why So Serious?',
-    status: 'Released',
-    director: 'Christopher Nolan',
-    castMembers: ['Christian Bale', 'Heath Ledger', 'Aaron Eckhart', 'Michael Caine'],
   },
   {
     id: 129,
@@ -277,11 +187,85 @@ const FALLBACK_MOVIES: MovieDetailDto[] = [
       { id: 10751, name: 'Family' },
       { id: 14, name: 'Fantasy' },
     ],
+    originalLanguage: 'ja',
     runtime: 125,
     tagline: 'Nothing that happens is ever forgotten.',
     status: 'Released',
     director: 'Hayao Miyazaki',
     castMembers: ['Rumi Hiiragi', 'Miyu Irino', 'Mari Natsuki', 'Takashi Naito'],
+  },
+  {
+    id: 1966,
+    title: 'Lagaan: Once Upon a Time in India',
+    originalTitle: 'लगान',
+    overview:
+      'In Victorian India, the people of a small village bet their future on a game of cricket against their ruthless British rulers to win freedom from excessive taxation (lagaan).',
+    posterPath: '/45P0YfK739tJ90p9x.jpg',
+    backdropPath: '/lagaanBackdrop.jpg',
+    releaseDate: '2001-06-15',
+    voteAverage: 7.7,
+    voteCount: 540,
+    popularity: 65.4,
+    genreIds: [18, 10749, 10402],
+    genres: [
+      { id: 18, name: 'Drama' },
+      { id: 10749, name: 'Romance' },
+    ],
+    originalLanguage: 'hi',
+    runtime: 224,
+    tagline: 'A million dreams, one goal.',
+    status: 'Released',
+    director: 'Ashutosh Gowariker',
+    castMembers: ['Aamir Khan', 'Gracy Singh', 'Rachel Shelley', 'Paul Blackthorne'],
+  },
+  {
+    id: 27205,
+    title: 'Inception',
+    originalTitle: 'Inception',
+    overview:
+      'Cobb, a skilled thief who commits corporate espionage by infiltrating the subconscious of his targets is offered a chance to regain his old life as payment for a task considered to be impossible: "inception", the implantation of another person\'s idea into a target\'s subconscious.',
+    posterPath: '/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg',
+    backdropPath: '/8ZTVqvKDQ8emSGUEMjsS4yHAwrp.jpg',
+    releaseDate: '2010-07-15',
+    voteAverage: 8.36,
+    voteCount: 35800,
+    popularity: 132.4,
+    genreIds: [28, 12, 878],
+    genres: [
+      { id: 28, name: 'Action' },
+      { id: 12, name: 'Adventure' },
+      { id: 878, name: 'Science Fiction' },
+    ],
+    originalLanguage: 'en',
+    runtime: 148,
+    tagline: 'Your mind is the scene of the crime.',
+    status: 'Released',
+    director: 'Christopher Nolan',
+    castMembers: ['Leonardo DiCaprio', 'Joseph Gordon-Levitt', 'Elliot Page', 'Tom Hardy'],
+  },
+  {
+    id: 693134,
+    title: 'Dune: Part Two',
+    originalTitle: 'Dune: Part Two',
+    overview:
+      'Follow the mythic journey of Paul Atreides as he unites with Chani and the Fremen while on a path of revenge against the conspirators who destroyed his family.',
+    posterPath: '/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg',
+    backdropPath: '/xOMo8BRK7PfcJv9JCnx7s5200fr.jpg',
+    releaseDate: '2024-02-27',
+    voteAverage: 8.18,
+    voteCount: 5200,
+    popularity: 210.5,
+    genreIds: [878, 12],
+    genres: [
+      { id: 878, name: 'Science Fiction' },
+      { id: 12, name: 'Adventure' },
+    ],
+    originalLanguage: 'en',
+    runtime: 166,
+    tagline: 'Long live the fighters.',
+    status: 'Released',
+    director: 'Denis Villeneuve',
+    castMembers: ['Timothée Chalamet', 'Zendaya', 'Rebecca Ferguson', 'Javier Bardem'],
   },
 ];
 
@@ -304,7 +288,7 @@ export class TmdbMovieProvider implements MovieProvider {
 
     this.hasValidCredentials = Boolean(
       (this.accessToken && this.accessToken.length > 20) ||
-      (this.apiKey && this.apiKey.length > 10),
+        (this.apiKey && this.apiKey.length > 10),
     );
 
     const headers: Record<string, string> = {
@@ -312,8 +296,8 @@ export class TmdbMovieProvider implements MovieProvider {
       Accept: 'application/json',
     };
 
-    if (this.accessToken && this.accessToken.length > 20) {
-      headers['Authorization'] = `Bearer ${this.accessToken}`;
+    if (this.accessToken) {
+      headers.Authorization = `Bearer ${this.accessToken}`;
     }
 
     this.client = axios.create({
@@ -337,6 +321,7 @@ export class TmdbMovieProvider implements MovieProvider {
       popularity: Number((tmdbMovie.popularity || 0).toFixed(1)),
       genreIds: tmdbMovie.genre_ids || (tmdbMovie.genres?.map((g: any) => g.id) || []),
       genres: tmdbMovie.genres || [],
+      originalLanguage: tmdbMovie.original_language || undefined,
       adult: tmdbMovie.adult || false,
     };
   }
@@ -347,11 +332,17 @@ export class TmdbMovieProvider implements MovieProvider {
   ): Promise<PaginatedMovieResultDto> {
     const page = filter?.page || 1;
     if (!this.hasValidCredentials) {
-      const filtered = FALLBACK_MOVIES.filter(
+      let filtered = FALLBACK_MOVIES.filter(
         (m) =>
           m.title.toLowerCase().includes(query.toLowerCase()) ||
-          m.overview.toLowerCase().includes(query.toLowerCase()),
+          (m.originalTitle && m.originalTitle.toLowerCase().includes(query.toLowerCase())) ||
+          m.overview.toLowerCase().includes(query.toLowerCase()) ||
+          (m.director && m.director.toLowerCase().includes(query.toLowerCase())) ||
+          (m.castMembers && m.castMembers.some((c) => c.toLowerCase().includes(query.toLowerCase()))),
       );
+      if (filter?.withOriginalLanguage) {
+        filtered = filtered.filter((m) => m.originalLanguage === filter.withOriginalLanguage);
+      }
       return {
         page: 1,
         totalPages: 1,
@@ -369,18 +360,28 @@ export class TmdbMovieProvider implements MovieProvider {
       if (filter?.year) {
         params.primary_release_year = filter.year;
       }
+      if (filter?.region) {
+        params.region = filter.region;
+      }
       if (this.apiKey && !this.accessToken) {
         params.api_key = this.apiKey;
       }
 
       const response = await this.client.get('/search/movie', { params });
+      let results = (response.data.results || []).map((m: any) =>
+        this.mapTmdbMovieToDto(m),
+      );
+      if (filter?.withOriginalLanguage) {
+        results = results.filter(
+          (m: MovieDto) => m.originalLanguage === filter.withOriginalLanguage,
+        );
+      }
+
       return {
         page: response.data.page || 1,
         totalPages: response.data.total_pages || 1,
         totalResults: response.data.total_results || 0,
-        results: (response.data.results || []).map((m: any) =>
-          this.mapTmdbMovieToDto(m),
-        ),
+        results,
       };
     } catch (err: any) {
       this.logger.warn(`TMDB search failed (${err.message}). Using fallback search.`);
@@ -448,22 +449,15 @@ export class TmdbMovieProvider implements MovieProvider {
         status: data.status,
         budget: data.budget,
         revenue: data.revenue,
-        spokenLanguages: data.spoken_languages,
-        genres: data.genres || [],
-        director: directorObj?.name || undefined,
-        castMembers: cast.slice(0, 5).map((c) => c.name),
-        credits: {
-          cast,
-          crew,
-          director: directorObj,
-        },
+        spokenLanguages: data.spoken_languages || [],
+        credits: { cast, crew, director: directorObj },
         videos,
+        director: directorObj?.name,
+        castMembers: cast.map((c) => c.name),
         imdbId: data.imdb_id,
       };
     } catch (err: any) {
-      this.logger.warn(
-        `TMDB getMovieDetails failed for ${movieId} (${err.message}). Returning fallback movie.`,
-      );
+      this.logger.warn(`TMDB getMovieDetails failed for ${movieId} (${err.message}). Using fallback.`);
       const fallback = FALLBACK_MOVIES.find((m) => m.id === movieId);
       return fallback || FALLBACK_MOVIES[0];
     }
@@ -548,18 +542,24 @@ export class TmdbMovieProvider implements MovieProvider {
   async getTrendingMovies(
     timeWindow: 'day' | 'week' = 'week',
     page: number = 1,
+    region?: string,
   ): Promise<PaginatedMovieResultDto> {
     if (!this.hasValidCredentials) {
+      let results = [...FALLBACK_MOVIES];
+      if (region === 'IN') {
+        results = results.filter((m) => m.originalLanguage === 'hi' || m.originalLanguage === 'te');
+      }
       return {
         page: 1,
         totalPages: 1,
-        totalResults: FALLBACK_MOVIES.length,
-        results: FALLBACK_MOVIES,
+        totalResults: results.length,
+        results,
       };
     }
 
     try {
       const params: Record<string, any> = { page };
+      if (region) params.region = region;
       if (this.apiKey && !this.accessToken) params.api_key = this.apiKey;
 
       const response = await this.client.get(
@@ -585,7 +585,10 @@ export class TmdbMovieProvider implements MovieProvider {
     }
   }
 
-  async getPopularMovies(page: number = 1): Promise<PaginatedMovieResultDto> {
+  async getPopularMovies(
+    page: number = 1,
+    region?: string,
+  ): Promise<PaginatedMovieResultDto> {
     if (!this.hasValidCredentials) {
       return {
         page: 1,
@@ -597,6 +600,7 @@ export class TmdbMovieProvider implements MovieProvider {
 
     try {
       const params: Record<string, any> = { page };
+      if (region) params.region = region;
       if (this.apiKey && !this.accessToken) params.api_key = this.apiKey;
 
       const response = await this.client.get('/movie/popular', { params });
@@ -653,7 +657,10 @@ export class TmdbMovieProvider implements MovieProvider {
     }
   }
 
-  async getUpcomingMovies(page: number = 1): Promise<PaginatedMovieResultDto> {
+  async getUpcomingMovies(
+    page: number = 1,
+    region?: string,
+  ): Promise<PaginatedMovieResultDto> {
     if (!this.hasValidCredentials) {
       return {
         page: 1,
@@ -665,6 +672,7 @@ export class TmdbMovieProvider implements MovieProvider {
 
     try {
       const params: Record<string, any> = { page };
+      if (region) params.region = region;
       if (this.apiKey && !this.accessToken) params.api_key = this.apiKey;
 
       const response = await this.client.get('/movie/upcoming', { params });
@@ -699,6 +707,9 @@ export class TmdbMovieProvider implements MovieProvider {
       if (filter.minRating) {
         results = results.filter((m) => m.voteAverage >= filter.minRating!);
       }
+      if (filter.withOriginalLanguage) {
+        results = results.filter((m) => m.originalLanguage === filter.withOriginalLanguage);
+      }
       return {
         page,
         totalPages: 1,
@@ -718,6 +729,13 @@ export class TmdbMovieProvider implements MovieProvider {
         params.with_genres = filter.genreId;
       } else if (filter.genreIds && filter.genreIds.length > 0) {
         params.with_genres = filter.genreIds.join(',');
+      }
+
+      if (filter.withOriginalLanguage) {
+        params.with_original_language = filter.withOriginalLanguage;
+      }
+      if (filter.region) {
+        params.region = filter.region;
       }
 
       if (filter.year) {
@@ -765,7 +783,7 @@ export class TmdbMovieProvider implements MovieProvider {
       const response = await this.client.get('/genre/movie/list', { params });
       return response.data.genres || FALLBACK_GENRES;
     } catch (err: any) {
-      this.logger.warn(`TMDB getGenres failed (${err.message}). Returning static genres.`);
+      this.logger.warn(`TMDB genres failed (${err.message})`);
       return FALLBACK_GENRES;
     }
   }

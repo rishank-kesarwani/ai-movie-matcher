@@ -45,11 +45,28 @@ export const GENRE_MAP: Record<number, string> = {
   37: 'Western',
 };
 
-export const QUICK_PROMPTS = [
-  'Something like Interstellar but less serious and under 2 hours',
-  'Feel-good adventure about friendship and travel',
-  'Mind-bending psychological thriller with huge plot twists',
-  '5 highly rated comedy films for a cozy Friday movie night',
-  'Dark neo-noir cyberpunk with atmospheric visuals',
-  'Emotional anime masterpiece similar to Spirited Away',
+export const LANGUAGE_OPTIONS = [
+  { code: '', name: 'All Languages', label: 'All Industries (Worldwide)', flag: '🌍' },
+  { code: 'hi', name: 'Hindi', label: 'Bollywood (Hindi)', flag: '🇮🇳' },
+  { code: 'te', name: 'Telugu', label: 'Tollywood (Telugu)', flag: '🇮🇳' },
+  { code: 'ta', name: 'Tamil', label: 'Kollywood (Tamil)', flag: '🇮🇳' },
+  { code: 'ml', name: 'Malayalam', label: 'Mollywood (Malayalam)', flag: '🇮🇳' },
+  { code: 'kn', name: 'Kannada', label: 'Sandalwood (Kannada)', flag: '🇮🇳' },
+  { code: 'en', name: 'English', label: 'Hollywood / English', flag: '🇺🇸' },
+  { code: 'ko', name: 'Korean', label: 'Korean Cinema', flag: '🇰🇷' },
+  { code: 'ja', name: 'Japanese', label: 'Anime & Japanese', flag: '🇯🇵' },
+  { code: 'es', name: 'Spanish', label: 'Spanish Cinema', flag: '🇪🇸' },
+  { code: 'fr', name: 'French', label: 'French Cinema', flag: '🇫🇷' },
+  { code: 'it', name: 'Italian', label: 'Italian Cinema', flag: '🇮🇹' },
+  { code: 'de', name: 'German', label: 'German Cinema', flag: '🇩🇪' },
 ];
+
+export const QUICK_PROMPTS = [
+  'Best Bollywood inspirational movies like 3 Idiots, Dangal, and Swades',
+  'Epic South Indian action spectacle like RRR, Baahubali, and KGF',
+  'Gripping Korean thriller like Parasite or Memories of Murder',
+  'Emotional anime masterpiece similar to Spirited Away and Your Name',
+  'Mind-bending sci-fi thriller like Inception or Interstellar with huge twists',
+  'Feel-good adventure comedy for a cozy movie night with friends',
+];
+

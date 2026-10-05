@@ -22,22 +22,40 @@ export class MoviesService {
   async getTrending(
     timeWindow: 'day' | 'week' = 'week',
     page: number = 1,
+    region?: string,
   ): Promise<PaginatedMovieResultDto> {
-    const cacheKey = `movie:trending:${timeWindow}:${page}`;
+    const cacheKey = `movie:trending:${timeWindow}:${page}:${region || 'all'}`;
     const cached = await this.redisService.get<PaginatedMovieResultDto>(cacheKey);
     if (cached) return cached;
 
-    const result = await this.movieProvider.getTrendingMovies(timeWindow, page);
+    const result = await this.movieProvider.getTrendingMovies(timeWindow, page, region);
     await this.redisService.set(cacheKey, result, 3600); // 1 hour TTL
     return result;
   }
 
-  async getPopular(page: number = 1): Promise<PaginatedMovieResultDto> {
-    const cacheKey = `movie:popular:${page}`;
+  async getBollywoodTrending(page: number = 1): Promise<PaginatedMovieResultDto> {
+    const cacheKey = `movie:bollywood:trending:${page}`;
     const cached = await this.redisService.get<PaginatedMovieResultDto>(cacheKey);
     if (cached) return cached;
 
-    const result = await this.movieProvider.getPopularMovies(page);
+    const result = await this.movieProvider.discoverMovies({
+      withOriginalLanguage: 'hi',
+      sortBy: 'popularity.desc',
+      page,
+    });
+    await this.redisService.set(cacheKey, result, 3600); // 1 hour TTL
+    return result;
+  }
+
+  async getPopular(
+    page: number = 1,
+    region?: string,
+  ): Promise<PaginatedMovieResultDto> {
+    const cacheKey = `movie:popular:${page}:${region || 'all'}`;
+    const cached = await this.redisService.get<PaginatedMovieResultDto>(cacheKey);
+    if (cached) return cached;
+
+    const result = await this.movieProvider.getPopularMovies(page, region);
     await this.redisService.set(cacheKey, result, 3600); // 1 hour TTL
     return result;
   }
@@ -52,12 +70,15 @@ export class MoviesService {
     return result;
   }
 
-  async getUpcoming(page: number = 1): Promise<PaginatedMovieResultDto> {
-    const cacheKey = `movie:upcoming:${page}`;
+  async getUpcoming(
+    page: number = 1,
+    region?: string,
+  ): Promise<PaginatedMovieResultDto> {
+    const cacheKey = `movie:upcoming:${page}:${region || 'all'}`;
     const cached = await this.redisService.get<PaginatedMovieResultDto>(cacheKey);
     if (cached) return cached;
 
-    const result = await this.movieProvider.getUpcomingMovies(page);
+    const result = await this.movieProvider.getUpcomingMovies(page, region);
     await this.redisService.set(cacheKey, result, 21600); // 6 hours TTL
     return result;
   }

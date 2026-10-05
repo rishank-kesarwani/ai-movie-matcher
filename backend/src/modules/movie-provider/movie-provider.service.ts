@@ -48,20 +48,27 @@ export class MovieProviderService implements MovieProvider {
   async getTrendingMovies(
     timeWindow?: 'day' | 'week',
     page?: number,
+    region?: string,
   ): Promise<PaginatedMovieResultDto> {
-    return this.provider.getTrendingMovies(timeWindow, page);
+    return this.provider.getTrendingMovies(timeWindow, page, region);
   }
 
-  async getPopularMovies(page?: number): Promise<PaginatedMovieResultDto> {
-    return this.provider.getPopularMovies(page);
+  async getPopularMovies(
+    page?: number,
+    region?: string,
+  ): Promise<PaginatedMovieResultDto> {
+    return this.provider.getPopularMovies(page, region);
   }
 
   async getTopRatedMovies(page?: number): Promise<PaginatedMovieResultDto> {
     return this.provider.getTopRatedMovies(page);
   }
 
-  async getUpcomingMovies(page?: number): Promise<PaginatedMovieResultDto> {
-    return this.provider.getUpcomingMovies(page);
+  async getUpcomingMovies(
+    page?: number,
+    region?: string,
+  ): Promise<PaginatedMovieResultDto> {
+    return this.provider.getUpcomingMovies(page, region);
   }
 
   async discoverMovies(

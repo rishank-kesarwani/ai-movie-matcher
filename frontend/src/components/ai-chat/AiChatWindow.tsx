@@ -12,7 +12,7 @@ const INITIAL_MESSAGES: ChatMessage[] = [
   {
     role: 'assistant',
     content:
-      'Hello! I am CineMatch AI, your cinematic recommendation intelligence. Ask me for recommendations matching any mood, theme, runtime, or combinations (e.g. "Something like Interstellar but less serious and under 2 hours"). What are you in the mood to watch?',
+      'Hello! I am CineMatch AI, your cinematic recommendation intelligence for Indian & worldwide movies. Ask me for recommendations across Bollywood, Hollywood, South Indian cinema (Telugu, Tamil, Malayalam), Korean thrillers, Anime, or European classics (e.g. "Recommend an inspiring Bollywood masterpiece like 3 Idiots" or "An epic action spectacle like RRR"). What are you in the mood to watch?',
   },
 ];
 

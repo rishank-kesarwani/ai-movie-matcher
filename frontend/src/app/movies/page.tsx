@@ -1,22 +1,49 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '../../lib/api-client';
 import { Movie, Genre } from '../../types';
+import { LANGUAGE_OPTIONS } from '../../lib/constants';
 import { MovieGrid } from '../../components/movies/MovieGrid';
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
 import { ErrorState } from '../../components/ui/ErrorState';
 import { EmptyState } from '../../components/ui/EmptyState';
-import { Film, Filter, SlidersHorizontal, RotateCcw } from 'lucide-react';
+import { Film, Filter, SlidersHorizontal, RotateCcw, Globe } from 'lucide-react';
 
-export default function MoviesPage() {
+const QUICK_INDUSTRY_PILLS = [
+  { label: 'All Industries', code: '', flag: '🌍' },
+  { label: 'Bollywood (Hindi)', code: 'hi', flag: '🇮🇳' },
+  { label: 'Tollywood (Telugu)', code: 'te', flag: '🇮🇳' },
+  { label: 'Kollywood (Tamil)', code: 'ta', flag: '🇮🇳' },
+  { label: 'Mollywood (Malayalam)', code: 'ml', flag: '🇮🇳' },
+  { label: 'Hollywood (English)', code: 'en', flag: '🇺🇸' },
+  { label: 'Korean Cinema', code: 'ko', flag: '🇰🇷' },
+  { label: 'Anime & Japanese', code: 'ja', flag: '🇯🇵' },
+];
+
+function MoviesContent() {
+  const searchParams = useSearchParams();
+  const initialLang = searchParams?.get('language') || '';
+
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(initialLang);
   const [selectedGenre, setSelectedGenre] = useState<number | undefined>(undefined);
   const [selectedYear, setSelectedYear] = useState<number | undefined>(undefined);
   const [minRating, setMinRating] = useState<number | undefined>(undefined);
   const [maxRuntime, setMaxRuntime] = useState<number | undefined>(undefined);
   const [sortBy, setSortBy] = useState<string>('popularity.desc');
   const [page, setPage] = useState(1);
+
+  // Sync with searchParams when navigating (e.g. from home page link)
+  useEffect(() => {
+    if (searchParams) {
+      const urlLang = searchParams.get('language');
+      if (urlLang !== null) {
+        setSelectedLanguage(urlLang);
+      }
+    }
+  }, [searchParams]);
 
   // Fetch Genres
   const { data: genresData } = useQuery<Genre[]>({
@@ -37,6 +64,7 @@ export default function MoviesPage() {
     queryKey: [
       'movies',
       'discover',
+      selectedLanguage,
       selectedGenre,
       selectedYear,
       minRating,
@@ -46,6 +74,7 @@ export default function MoviesPage() {
     ],
     queryFn: async () => {
       const params = new URLSearchParams();
+      if (selectedLanguage) params.append('language', selectedLanguage);
       if (selectedGenre) params.append('genreId', String(selectedGenre));
       if (selectedYear) params.append('year', String(selectedYear));
       if (minRating) params.append('minRating', String(minRating));
@@ -59,6 +88,7 @@ export default function MoviesPage() {
   });
 
   const resetFilters = () => {
+    setSelectedLanguage('');
     setSelectedGenre(undefined);
     setSelectedYear(undefined);
     setMinRating(undefined);
@@ -77,14 +107,38 @@ export default function MoviesPage() {
       <div>
         <div className="flex items-center space-x-2 text-xs font-semibold text-cyan-400 uppercase tracking-wider mb-2">
           <Film className="w-4 h-4" />
-          <span>Movie Catalog</span>
+          <span>Worldwide Movie Catalog</span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-          Explore All Movies
+          Explore Movies & Global Cinema
         </h1>
         <p className="text-xs sm:text-sm text-slate-400 mt-1">
-          Filter through thousands of films by genre, release era, rating, and runtime.
+          Filter through thousands of Bollywood, Hollywood, South Indian, Asian, and worldwide masterpieces by industry, genre, release era, rating, and runtime.
         </p>
+      </div>
+
+      {/* Quick Industry Filter Pills */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+        {QUICK_INDUSTRY_PILLS.map((pill) => {
+          const isSelected = selectedLanguage === pill.code;
+          return (
+            <button
+              key={pill.code}
+              onClick={() => {
+                setSelectedLanguage(pill.code);
+                setPage(1);
+              }}
+              className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-bold shrink-0 transition-all ${
+                isSelected
+                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/25 border border-cyan-400/40'
+                  : 'bg-slate-900/90 text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-800'
+              }`}
+            >
+              <span>{pill.flag}</span>
+              <span>{pill.label}</span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Filter Control Bar */}
@@ -104,8 +158,29 @@ export default function MoviesPage() {
           </button>
         </div>
 
-        {/* Filter Dropdowns */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
+        {/* Filter Dropdowns Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+          {/* Language / Industry */}
+          <div>
+            <label className="block text-[11px] font-semibold text-slate-400 mb-1">
+              Industry / Language
+            </label>
+            <select
+              value={selectedLanguage}
+              onChange={(e) => {
+                setSelectedLanguage(e.target.value);
+                setPage(1);
+              }}
+              className="w-full py-2 px-3 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-200 outline-none focus:border-cyan-500 font-medium"
+            >
+              {LANGUAGE_OPTIONS.map((lang) => (
+                <option key={lang.code} value={lang.code}>
+                  {lang.flag} {lang.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
           {/* Genre */}
           <div>
             <label className="block text-[11px] font-semibold text-slate-400 mb-1">
@@ -190,6 +265,7 @@ export default function MoviesPage() {
               <option value="90">Under 90 Mins</option>
               <option value="120">Under 2 Hours (120 Mins)</option>
               <option value="150">Under 2.5 Hours</option>
+              <option value="180">Under 3 Hours</option>
             </select>
           </div>
 
@@ -221,13 +297,13 @@ export default function MoviesPage() {
       ) : error ? (
         <ErrorState
           title="Could Not Filter Movies"
-          message={error.message}
+          message={(error as any)?.message || 'Failed to load movies'}
           onRetry={() => refetch()}
         />
       ) : movies.length === 0 ? (
         <EmptyState
           title="No Movies Found"
-          description="Try broadening your filter criteria or resetting to explore our full library."
+          description="Try broadening your filter criteria or choosing another industry / language."
           actionLabel="Reset Filters"
           onAction={resetFilters}
         />
@@ -261,5 +337,13 @@ export default function MoviesPage() {
         </>
       )}
     </div>
+  );
+}
+
+export default function MoviesPage() {
+  return (
+    <Suspense fallback={<LoadingSpinner message="Loading movie catalog..." />}>
+      <MoviesContent />
+    </Suspense>
   );
 }

@@ -131,9 +131,12 @@ export default function SearchPage() {
         <div className="flex flex-wrap items-center justify-center gap-2 pt-2 text-xs">
           <span className="text-slate-500 text-[11px] font-semibold uppercase">Try:</span>
           {[
-            'Feel-good movie about friendship and travel',
+            'Inspirational Bollywood like 3 Idiots or Swades',
+            'Epic South Indian action spectacle like RRR',
+            'Gripping Korean thriller like Parasite',
             'Mind-bending sci-fi with philosophical themes',
-            'Fast-paced dark comedy thriller',
+            'Emotional anime like Spirited Away',
+            'Feel-good road trip friendship comedy',
           ].map((sample) => (
             <button
               key={sample}
