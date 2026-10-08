@@ -161,41 +161,227 @@ export class AiPlatformClient {
       matchReason: string;
     }> = [];
 
-    // 1. Bollywood & Indian Inspirational / Social Drama / Underdog
+    // 1. Bollywood Comedy (Post-2015 / Modern / Laugh / Family Comedy)
     if (
-      lower.includes('bollywood') ||
-      lower.includes('hindi') ||
+      (lower.includes('comedy') ||
+        lower.includes('funny') ||
+        lower.includes('humor') ||
+        lower.includes('laugh') ||
+        lower.includes('comic') ||
+        lower.includes('hilarious')) &&
+      (lower.includes('bollywood') ||
+        lower.includes('hindi') ||
+        lower.includes('indian') ||
+        lower.includes('2015') ||
+        lower.includes('stree') ||
+        lower.includes('badhaai') ||
+        lower.includes('piku'))
+    ) {
+      reply =
+        'Here are top-rated Bollywood comedy masterpieces celebrated for witty writing, brilliant performances, and riotous entertainment:';
+      candidatePool = [
+        {
+          title: 'Stree',
+          tmdbId: 533991,
+          year: 2018,
+          keywords: ['stree', 'stree 2'],
+          matchReason:
+            'A trailblazing horror-comedy masterpiece starring Rajkummar Rao and Shraddha Kapoor with sharp humor and brilliant social satire.',
+        },
+        {
+          title: 'Badhaai Ho',
+          tmdbId: 547654,
+          year: 2018,
+          keywords: ['badhaai ho', 'badhai ho', 'ayushmann'],
+          matchReason:
+            'National Award-winning family comedy about a middle-aged pregnancy that leads to heartwarming chaos and laugh-out-loud moments.',
+        },
+        {
+          title: 'Chhichhore',
+          tmdbId: 596650,
+          year: 2019,
+          keywords: ['chhichhore', 'chhichore'],
+          matchReason:
+            'A joyful, nostalgia-filled hostel comedy-drama celebrating college friendship, hostel rivalry, and the spirit of never giving up.',
+        },
+        {
+          title: 'Bareilly Ki Barfi',
+          tmdbId: 467106,
+          year: 2017,
+          keywords: ['bareilly ki barfi', 'bareilly'],
+          matchReason:
+            'A charming small-town romantic comedy powered by sparkling dialogue and Rajkummar Rao\'s show-stealing comedic brilliance.',
+        },
+        {
+          title: 'Hindi Medium',
+          tmdbId: 456570,
+          year: 2017,
+          keywords: ['hindi medium', 'irrfan'],
+          matchReason:
+            'Irrfan Khan shines in this hilarious and thought-provoking satire about the absurd race for elite school admissions in India.',
+        },
+        {
+          title: 'Piku',
+          tmdbId: 332835,
+          year: 2015,
+          keywords: ['piku', 'deepika', 'amitabh'],
+          matchReason:
+            'A delightfully quirky, humorous road-trip comedy about an eccentric aging father, his independent daughter, and an exasperated taxi owner.',
+        },
+      ];
+    }
+    // 2. Bollywood Thriller / Mystery / Crime / Suspense
+    else if (
+      (lower.includes('thriller') ||
+        lower.includes('mystery') ||
+        lower.includes('suspense') ||
+        lower.includes('crime') ||
+        lower.includes('dark') ||
+        lower.includes('andhadhun') ||
+        lower.includes('drishyam') ||
+        lower.includes('tumbbad')) &&
+      (lower.includes('bollywood') || lower.includes('hindi') || lower.includes('indian'))
+    ) {
+      reply =
+        'Here are edge-of-the-seat Bollywood thrillers with mind-bending twists, noir atmosphere, and masterclass storytelling:';
+      candidatePool = [
+        {
+          title: 'Andhadhun',
+          tmdbId: 534780,
+          year: 2018,
+          keywords: ['andhadhun', 'ayushmann', 'tabu'],
+          matchReason:
+            'Sriram Raghavan\'s razor-sharp black comedy crime thriller about a blind pianist who unwittingly witnesses a high-profile murder.',
+        },
+        {
+          title: 'Tumbbad',
+          tmdbId: 538858,
+          year: 2018,
+          keywords: ['tumbbad', 'hastar'],
+          matchReason:
+            'A visually awe-inspiring, atmospheric folk-horror mythic thriller on boundless human greed and divine consequences.',
+        },
+        {
+          title: 'Kahaani',
+          tmdbId: 82825,
+          year: 2012,
+          keywords: ['kahaani', 'vidya balan'],
+          matchReason:
+            'A pregnant woman searches for her missing husband in Kolkata during Durga Puja in this masterclass suspense mystery with an iconic climax.',
+        },
+        {
+          title: 'Article 15',
+          tmdbId: 597089,
+          year: 2019,
+          keywords: ['article 15', 'anubhav sinha'],
+          matchReason:
+            'A gripping, realistic police procedural investigating injustice and social hierarchy in rural India.',
+        },
+        {
+          title: 'Badla',
+          tmdbId: 581361,
+          year: 2019,
+          keywords: ['badla', 'amitabh', 'taapsee'],
+          matchReason:
+            'Sujoy Ghosh\'s slick locked-room murder mystery packed with mind games, deception, and razor-sharp interrogation twists.',
+        },
+      ];
+    }
+    // 3. Bollywood Romantic / Coming-of-Age / Friendship
+    else if (
+      (lower.includes('romantic') ||
+        lower.includes('romance') ||
+        lower.includes('love') ||
+        lower.includes('travel') ||
+        lower.includes('road trip') ||
+        lower.includes('friendship') ||
+        lower.includes('znmd') ||
+        lower.includes('yjhd')) &&
+      (lower.includes('bollywood') || lower.includes('hindi') || lower.includes('indian'))
+    ) {
+      reply =
+        'Here are beloved Bollywood romantic and friendship classics filled with vibrant emotion, soulful music, and unforgettable life journeys:';
+      candidatePool = [
+        {
+          title: 'Yeh Jawaani Hai Deewani',
+          tmdbId: 185008,
+          year: 2013,
+          keywords: ['yeh jawaani hai deewani', 'yjhd', 'bunny'],
+          matchReason:
+            'A dazzling celebration of youthful wanderlust, ambition, deep friendship, and finding balance in love.',
+        },
+        {
+          title: 'Zindagi Na Milegi Dobara',
+          tmdbId: 61202,
+          year: 2011,
+          keywords: ['zindagi na milegi dobara', 'znmd'],
+          matchReason:
+            'The definitive road-trip masterpiece exploring freedom, conquering fears, and treasuring lifelong brotherhood across Spain.',
+        },
+        {
+          title: 'Jab We Met',
+          tmdbId: 11807,
+          year: 2007,
+          keywords: ['jab we met', 'geet'],
+          matchReason:
+            'Imtiaz Ali\'s timeless romantic comedy brimming with infectious optimism, witty banter, and profound personal discovery.',
+        },
+        {
+          title: 'Bareilly Ki Barfi',
+          tmdbId: 467106,
+          year: 2017,
+          keywords: ['bareilly ki barfi'],
+          matchReason:
+            'A delightful small-town romance full of quirky twists, authentic charm, and wonderful heart.',
+        },
+        {
+          title: 'Chhichhore',
+          tmdbId: 596650,
+          year: 2019,
+          keywords: ['chhichhore'],
+          matchReason:
+            'A heartwarming tribute to college bonds, second chances, and true camaraderie.',
+        },
+      ];
+    }
+    // 4. Bollywood & Indian Inspirational / Social Drama / Underdog
+    else if (
       lower.includes('inspirational') ||
+      lower.includes('inspiring') ||
+      lower.includes('underdog') ||
       lower.includes('3 idiots') ||
       lower.includes('dangal') ||
       lower.includes('swades') ||
-      lower.includes('chhichhore') ||
-      lower.includes('sultan') ||
+      lower.includes('12th fail') ||
+      lower.includes('super 30') ||
+      lower.includes('bhaag milkha') ||
+      lower.includes('chak de') ||
       lower.includes('lagaan') ||
-      lower.includes('chak de')
+      lower.includes('taare zameen') ||
+      (lower.includes('bollywood') && (lower.includes('best') || lower.includes('top') || lower.includes('movie')))
     ) {
       reply =
         'Here are celebrated, emotionally resonant Bollywood masterpieces with similar uplifting underdog spirit, friendship, and relentless determination:';
       candidatePool = [
         {
+          title: '12th Fail',
+          tmdbId: 1163258,
+          year: 2023,
+          keywords: ['12th fail', 'manoj kumar sharma', 'vikrant massey'],
+          matchReason:
+            'Vidhu Vinod Chopra\'s phenomenal true-story masterpiece on restarting life, unshakeable integrity, and clearing the world\'s toughest UPSC exam against crushing poverty.',
+        },
+        {
           title: 'Chhichhore',
-          tmdbId: 592834,
+          tmdbId: 596650,
           year: 2019,
           keywords: ['chhichhore', 'chhichore'],
           matchReason:
             'Directed by Nitesh Tiwari (Dangal), this heartfelt comedy-drama captures hostel camaraderie, overcoming societal pressure, and celebrating effort over outcome just like 3 Idiots.',
         },
         {
-          title: 'Sultan',
-          tmdbId: 386004,
-          year: 2016,
-          keywords: ['sultan'],
-          matchReason:
-            'A stirring, emotionally charged wrestling and sports redemption saga celebrating grit, dedication, and personal triumph against all odds.',
-        },
-        {
           title: 'Super 30',
-          tmdbId: 535292,
+          tmdbId: 534075,
           year: 2019,
           keywords: ['super 30', 'super30', 'anand kumar'],
           matchReason:
@@ -203,7 +389,7 @@ export class AiPlatformClient {
         },
         {
           title: 'Bhaag Milkha Bhaag',
-          tmdbId: 192136,
+          tmdbId: 206324,
           year: 2013,
           keywords: ['bhaag milkha bhaag', 'milkha singh'],
           matchReason:
@@ -211,7 +397,7 @@ export class AiPlatformClient {
         },
         {
           title: 'Chak De! India',
-          tmdbId: 4959,
+          tmdbId: 14163,
           year: 2007,
           keywords: ['chak de', 'chak de india'],
           matchReason:
@@ -227,7 +413,7 @@ export class AiPlatformClient {
         },
         {
           title: 'Swades',
-          tmdbId: 16738,
+          tmdbId: 15774,
           year: 2004,
           keywords: ['swades'],
           matchReason:
@@ -251,7 +437,7 @@ export class AiPlatformClient {
         },
       ];
     }
-    // 2. South Indian & Pan-Indian Action Spectacles
+    // 5. South Indian & Pan-Indian Action Spectacles
     else if (
       lower.includes('south indian') ||
       lower.includes('tollywood') ||
@@ -263,6 +449,8 @@ export class AiPlatformClient {
       lower.includes('pushpa') ||
       lower.includes('kantara') ||
       lower.includes('vikram') ||
+      lower.includes('kalki') ||
+      lower.includes('salaar') ||
       lower.includes('action') ||
       lower.includes('spectacle') ||
       lower.includes('telugu') ||
@@ -283,7 +471,7 @@ export class AiPlatformClient {
         },
         {
           title: 'Kantara',
-          tmdbId: 1024546,
+          tmdbId: 858485,
           year: 2022,
           keywords: ['kantara'],
           matchReason:
@@ -291,7 +479,7 @@ export class AiPlatformClient {
         },
         {
           title: 'Vikram',
-          tmdbId: 825672,
+          tmdbId: 743563,
           year: 2022,
           keywords: ['vikram', 'lokesh'],
           matchReason:
@@ -299,7 +487,7 @@ export class AiPlatformClient {
         },
         {
           title: 'Kalki 2898 AD',
-          tmdbId: 792307,
+          tmdbId: 801688,
           year: 2024,
           keywords: ['kalki', 'kalki 2898 ad'],
           matchReason:
@@ -307,7 +495,7 @@ export class AiPlatformClient {
         },
         {
           title: 'Salaar: Part 1 – Ceasefire',
-          tmdbId: 907083,
+          tmdbId: 770906,
           year: 2023,
           keywords: ['salaar'],
           matchReason:
@@ -331,7 +519,7 @@ export class AiPlatformClient {
         },
         {
           title: 'K.G.F: Chapter 1',
-          tmdbId: 554477,
+          tmdbId: 564147,
           year: 2018,
           keywords: ['kgf', 'k.g.f'],
           matchReason:
@@ -339,7 +527,7 @@ export class AiPlatformClient {
         },
       ];
     }
-    // 3. Korean Cinema & Thrillers
+    // 6. Korean Cinema & Thrillers
     else if (
       lower.includes('korean') ||
       lower.includes('parasite') ||
@@ -393,7 +581,7 @@ export class AiPlatformClient {
         },
       ];
     }
-    // 4. Anime & Japanese Cinema
+    // 7. Anime & Japanese Cinema
     else if (
       lower.includes('anime') ||
       lower.includes('japanese') ||
@@ -439,7 +627,7 @@ export class AiPlatformClient {
         },
       ];
     }
-    // 5. Mind-Bending Sci-Fi
+    // 8. Mind-Bending Sci-Fi
     else if (
       lower.includes('interstellar') ||
       lower.includes('inception') ||
@@ -493,14 +681,14 @@ export class AiPlatformClient {
         },
       ];
     }
-    // 6. Feel-Good, Comedy & Road Trip
+    // 9. General / Global Feel-Good
     else {
       reply =
         'Here are uplifting, humorous crowd-pleasers celebrating friendship, discovery, and adventurous life journeys:';
       candidatePool = [
         {
           title: 'Zindagi Na Milegi Dobara',
-          tmdbId: 71805,
+          tmdbId: 61202,
           year: 2011,
           keywords: ['zindagi na milegi dobara', 'znmd'],
           matchReason:
@@ -508,23 +696,23 @@ export class AiPlatformClient {
         },
         {
           title: 'Chhichhore',
-          tmdbId: 592834,
+          tmdbId: 596650,
           year: 2019,
           keywords: ['chhichhore', 'chhichore'],
           matchReason:
             'A joyful yet poignant college nostalgia trip filled with witty hostel antics and an inspiring message for life.',
         },
         {
-          title: 'Everything Everywhere All at Once',
-          tmdbId: 545611,
-          year: 2022,
-          keywords: ['everything everywhere all at once'],
+          title: 'Stree',
+          tmdbId: 533991,
+          year: 2018,
+          keywords: ['stree'],
           matchReason:
-            'An inventive, laugh-out-loud funny and visually stunning cinematic roller-coaster.',
+            'An inventive, laugh-out-loud funny and delightfully spooky cinematic roller-coaster.',
         },
         {
           title: 'Super 30',
-          tmdbId: 535292,
+          tmdbId: 534075,
           year: 2019,
           keywords: ['super 30', 'super30'],
           matchReason:

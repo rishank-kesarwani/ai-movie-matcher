@@ -77,32 +77,67 @@ Your mission:
     // If movies were suggested by title, enrich them with TMDB posters & ratings
     let enrichedMovies: any[] = [];
     if (result.suggestedMovies && result.suggestedMovies.length > 0) {
+      const titlesMatch = (t1: string, t2: string): boolean => {
+        if (!t1 || !t2) return false;
+        const clean1 = t1.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const clean2 = t2.toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (clean1 === clean2) return true;
+        if (clean1.includes(clean2) || clean2.includes(clean1)) return true;
+        const words1 = t1.toLowerCase().split(/\s+/).filter((w) => w.length > 2);
+        const words2 = t2.toLowerCase().split(/\s+/).filter((w) => w.length > 2);
+        return words1.some((w) => words2.includes(w));
+      };
+
       enrichedMovies = await Promise.all(
         result.suggestedMovies.map(async (suggestion) => {
           try {
+            // 1. If tmdbId is given, verify that TMDB movie actually matches the suggestion title
             if (suggestion.tmdbId) {
               const details = await this.movieProvider.getMovieDetails(suggestion.tmdbId);
-              if (details && !details.adult) {
+              if (
+                details &&
+                !details.adult &&
+                (titlesMatch(details.title, suggestion.title) ||
+                  titlesMatch(details.originalTitle || '', suggestion.title))
+              ) {
                 return {
                   ...details,
                   matchReason: suggestion.matchReason,
                 };
               }
             }
-            // Search movie by title
-            const searchRes = await this.movieProvider.searchMovies(suggestion.title);
+
+            // 2. Search movie by title on TMDB
+            const searchRes = await this.movieProvider.searchMovies(suggestion.title, {
+              year: suggestion.year,
+            });
+
             if (searchRes.results && searchRes.results.length > 0) {
-              const matched = searchRes.results.find((r) => !r.adult) || searchRes.results[0];
+              // Look for non-adult movie with matching title
+              const matched =
+                searchRes.results.find(
+                  (r) =>
+                    !r.adult &&
+                    (titlesMatch(r.title, suggestion.title) ||
+                      titlesMatch(r.originalTitle || '', suggestion.title)),
+                ) ||
+                searchRes.results.find((r) => !r.adult && (r.originalLanguage === 'hi' || r.originalLanguage === 'te' || r.originalLanguage === 'ta')) ||
+                searchRes.results.find((r) => !r.adult);
+
               if (matched && !matched.adult) {
                 return {
                   ...matched,
+                  title: matched.title || suggestion.title,
                   matchReason: suggestion.matchReason,
                 };
               }
             }
           } catch (err: any) {
-            this.logger.warn(`Could not enrich suggested movie "${suggestion.title}": ${err.message}`);
+            this.logger.warn(
+              `Could not enrich suggested movie "${suggestion.title}": ${err.message}`,
+            );
           }
+
           return {
             id: suggestion.tmdbId || Math.floor(Math.random() * 100000),
             title: suggestion.title,
