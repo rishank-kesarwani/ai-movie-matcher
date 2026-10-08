@@ -51,7 +51,7 @@ export class AiPlatformClient {
         `[AI Platform] Dispatching chat request to ${this.baseUrl}/v1/chat (App: ${payload.applicationId})`,
       );
 
-      const response = await this.client.post<ChatResponse>(
+      const response = await this.client.post<any>(
         '/v1/chat',
         payload,
       );
@@ -59,7 +59,23 @@ export class AiPlatformClient {
       const duration = Date.now() - startTime;
       this.logger.log(`[AI Platform] Chat response received in ${duration}ms`);
 
-      return response.data;
+      const resData = response.data?.data || response.data;
+      const reply =
+        resData?.reply ||
+        resData?.response ||
+        resData?.content ||
+        resData?.message ||
+        resData?.text ||
+        (typeof resData === 'string' ? resData : '');
+
+      const suggestedMovies = resData?.suggestedMovies || resData?.movies || [];
+
+      return {
+        reply: reply || this.generateFallbackChatResponse(payload.messages).reply,
+        suggestedMovies: suggestedMovies.length > 0 ? suggestedMovies : this.generateFallbackChatResponse(payload.messages).suggestedMovies,
+        usage: resData?.usage || response.data?.usage,
+        model: resData?.model || response.data?.model || 'ai-platform-gemini',
+      };
     } catch (err: any) {
       const duration = Date.now() - startTime;
       this.logger.warn(

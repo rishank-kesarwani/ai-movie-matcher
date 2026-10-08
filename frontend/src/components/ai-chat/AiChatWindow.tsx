@@ -55,11 +55,24 @@ export function AiChatWindow() {
           })),
         });
 
+        const payload = response?.data !== undefined ? response.data : response;
+        const replyText =
+          payload?.reply ||
+          payload?.response ||
+          payload?.content ||
+          payload?.message ||
+          payload?.text ||
+          (typeof payload === 'string' ? payload : '') ||
+          'Here are the recommendations matching your taste:';
+
+        const suggestedMovies = payload?.suggestedMovies || payload?.movies || [];
+        const enrichedMovies = payload?.enrichedMovies || payload?.movies || [];
+
         const assistantReply: ChatMessage = {
           role: 'assistant',
-          content: response.reply,
-          suggestedMovies: response.suggestedMovies,
-          enrichedMovies: response.enrichedMovies,
+          content: replyText,
+          suggestedMovies,
+          enrichedMovies,
           timestamp: new Date().toISOString(),
         };
 
