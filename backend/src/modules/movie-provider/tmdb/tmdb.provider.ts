@@ -405,7 +405,7 @@ export class TmdbMovieProvider implements MovieProvider {
 
     try {
       const params: Record<string, any> = {
-        append_to_response: 'credits,videos,similar',
+        append_to_response: 'credits,videos,similar,watch/providers',
       };
       if (this.apiKey && !this.accessToken) {
         params.api_key = this.apiKey;
@@ -442,6 +442,31 @@ export class TmdbMovieProvider implements MovieProvider {
         official: v.official,
       }));
 
+      // Parse Watch / Streaming Providers (JustWatch powered TMDB endpoint)
+      const providersData =
+        data['watch/providers']?.results?.IN ||
+        data['watch/providers']?.results?.US ||
+        data['watch/providers']?.results?.[Object.keys(data['watch/providers']?.results || {})[0]] ||
+        null;
+
+      const mapProviderList = (list?: any[]) =>
+        (list || []).map((p: any) => ({
+          providerId: p.provider_id,
+          providerName: p.provider_name,
+          logoPath: p.logo_path,
+          displayPriority: p.display_priority,
+        }));
+
+      const watchProviders = providersData
+        ? {
+            link: providersData.link,
+            flatrate: mapProviderList(providersData.flatrate),
+            free: mapProviderList(providersData.free || providersData.ads),
+            rent: mapProviderList(providersData.rent),
+            buy: mapProviderList(providersData.buy),
+          }
+        : undefined;
+
       return {
         ...baseMovie,
         runtime: data.runtime,
@@ -455,6 +480,7 @@ export class TmdbMovieProvider implements MovieProvider {
         director: directorObj?.name,
         castMembers: cast.map((c) => c.name),
         imdbId: data.imdb_id,
+        watchProviders,
       };
     } catch (err: any) {
       this.logger.warn(`TMDB getMovieDetails failed for ${movieId} (${err.message}). Using fallback.`);

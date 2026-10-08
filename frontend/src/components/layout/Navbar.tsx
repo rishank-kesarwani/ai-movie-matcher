@@ -26,13 +26,25 @@ export function Navbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [libraryDropdownOpen, setLibraryDropdownOpen] = useState(false);
 
-  // Close dropdown on click outside
+  const userDropdownRef = useRef<HTMLDivElement>(null);
+  const libraryDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdowns on click outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        userDropdownRef.current &&
+        !userDropdownRef.current.contains(event.target as Node)
+      ) {
         setUserDropdownOpen(false);
+      }
+      if (
+        libraryDropdownRef.current &&
+        !libraryDropdownRef.current.contains(event.target as Node)
+      ) {
+        setLibraryDropdownOpen(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
@@ -54,16 +66,18 @@ export function Navbar() {
     { href: '/ai-assistant', label: 'AI Assistant', icon: Bot },
   ];
 
-  const protectedLinks = [
+  const libraryLinks = [
     { href: '/watchlist', label: 'Watchlist', icon: Bookmark },
-    { href: '/watched', label: 'Watched', icon: CheckCircle2 },
+    { href: '/watched', label: 'Watched Movies', icon: CheckCircle2 },
     { href: '/favorites', label: 'Favorites', icon: Heart },
   ];
+
+  const isLibraryActive = libraryLinks.some((l) => pathname === l.href);
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-2">
+        <div className="flex items-center justify-between h-16 gap-4">
           {/* Brand Logo */}
           <Link href="/" className="flex items-center space-x-2.5 group shrink-0">
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-violet-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform duration-200 shrink-0">
@@ -80,7 +94,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center space-x-1 lg:space-x-1.5 xl:space-x-2 shrink min-w-0">
+          <nav className="hidden md:flex items-center space-x-1 lg:space-x-1.5 xl:space-x-2 shrink-0">
             {navLinks.map((link) => {
               const Icon = link.icon;
               const isActive = pathname === link.href;
@@ -105,36 +119,62 @@ export function Navbar() {
               );
             })}
 
+            {/* Library Menu for Authenticated Users */}
             {isAuthenticated && (
-              <>
-                <div className="h-4 w-px bg-slate-800 mx-1 shrink-0 hidden lg:block" />
-                {protectedLinks.map((link) => {
-                  const Icon = link.icon;
-                  const isActive = pathname === link.href;
+              <div className="relative" ref={libraryDropdownRef}>
+                <button
+                  onClick={() => setLibraryDropdownOpen(!libraryDropdownOpen)}
+                  className={`flex items-center space-x-1.5 px-2.5 py-1.5 xl:px-3 rounded-lg text-xs xl:text-sm font-medium whitespace-nowrap shrink-0 transition-all duration-200 ${
+                    isLibraryActive
+                      ? 'bg-slate-800 text-cyan-400'
+                      : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                  }`}
+                >
+                  <Bookmark className="w-4 h-4 text-cyan-400 shrink-0" />
+                  <span>My Library</span>
+                  <ChevronDown
+                    className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${
+                      libraryDropdownOpen ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
 
-                  return (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      className={`hidden lg:flex items-center space-x-1.5 px-2.5 py-1.5 xl:px-3 rounded-lg text-xs xl:text-sm font-medium whitespace-nowrap shrink-0 transition-colors ${
-                        isActive
-                          ? 'bg-slate-800 text-white'
-                          : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-                      }`}
-                    >
-                      <Icon className="w-4 h-4 text-slate-400 shrink-0" />
-                      <span className="whitespace-nowrap">{link.label}</span>
-                    </Link>
-                  );
-                })}
-              </>
+                {libraryDropdownOpen && (
+                  <div
+                    className="absolute left-0 mt-2 w-48 py-2 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl shadow-black/80 z-50 text-xs animate-in fade-in slide-in-from-top-2 duration-150"
+                    onClick={() => setLibraryDropdownOpen(false)}
+                  >
+                    <div className="px-3.5 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                      Collections
+                    </div>
+                    {libraryLinks.map((link) => {
+                      const Icon = link.icon;
+                      const isActive = pathname === link.href;
+                      return (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          className={`flex items-center space-x-2.5 px-3.5 py-2 transition-colors ${
+                            isActive
+                              ? 'bg-cyan-500/10 text-cyan-400 font-semibold'
+                              : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                          }`}
+                        >
+                          <Icon className="w-4 h-4 text-slate-400 shrink-0" />
+                          <span>{link.label}</span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             )}
           </nav>
 
           {/* Auth & Profile Actions */}
           <div className="hidden md:flex items-center space-x-2 xl:space-x-3 shrink-0">
             {isAuthenticated ? (
-              <div className="relative" ref={dropdownRef}>
+              <div className="relative" ref={userDropdownRef}>
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
                   className="flex items-center space-x-2 py-1 px-2 sm:px-2.5 rounded-xl border border-slate-700/80 bg-slate-900 hover:bg-slate-800 transition-colors shrink-0"
@@ -143,10 +183,14 @@ export function Navbar() {
                   <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-violet-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
                     {user?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U'}
                   </div>
-                  <span className="text-xs font-medium text-slate-200 max-w-[85px] lg:max-w-[110px] xl:max-w-[140px] truncate whitespace-nowrap">
+                  <span className="text-xs font-medium text-slate-200 max-w-[80px] lg:max-w-[100px] xl:max-w-[130px] truncate whitespace-nowrap">
                     {user?.name || user?.email?.split('@')[0]}
                   </span>
-                  <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${userDropdownOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown
+                    className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${
+                      userDropdownOpen ? 'rotate-180' : ''
+                    }`}
+                  />
                 </button>
 
                 {userDropdownOpen && (
@@ -281,7 +325,7 @@ export function Navbar() {
                 <div className="px-3 py-1 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                   My Cinema Library
                 </div>
-                {protectedLinks.map((link) => {
+                {libraryLinks.map((link) => {
                   const Icon = link.icon;
                   const isActive = pathname === link.href;
                   return (

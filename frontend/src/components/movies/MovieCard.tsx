@@ -2,11 +2,11 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Movie } from '../../types';
 import { getTmdbImageUrl, GENRE_MAP } from '../../lib/constants';
 import { useAuth } from '../../context/AuthContext';
 import { apiClient } from '../../lib/api-client';
+import { MovieImage } from '../ui/MovieImage';
 import { Star, Bookmark, Check, Heart, Plus } from 'lucide-react';
 
 interface MovieCardProps {
@@ -120,10 +120,12 @@ export function MovieCard({ movie, onWatchlistChanged }: MovieCardProps) {
     <div className="group relative rounded-2xl overflow-hidden glass-card flex flex-col h-full">
       {/* Poster Media */}
       <Link href={`/movies/${movie.id}`} className="relative aspect-[2/3] w-full overflow-hidden bg-slate-900 block">
-        <Image
-          src={getTmdbImageUrl(movie.posterPath, 'w500')}
+        <MovieImage
+          src={movie.posterPath ? getTmdbImageUrl(movie.posterPath, 'w500') : null}
           alt={movie.title}
+          title={movie.title}
           fill
+          type="poster"
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
           className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
           priority={false}

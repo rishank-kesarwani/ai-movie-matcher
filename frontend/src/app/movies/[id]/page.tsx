@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -12,6 +11,7 @@ import { useAuth } from '../../../context/AuthContext';
 import { LoadingSpinner } from '../../../components/ui/LoadingSpinner';
 import { ErrorState } from '../../../components/ui/ErrorState';
 import { MovieGrid } from '../../../components/movies/MovieGrid';
+import { MovieImage } from '../../../components/ui/MovieImage';
 import {
   Star,
   Bookmark,
@@ -24,6 +24,8 @@ import {
   Share2,
   Film,
   Check,
+  Tv,
+  ExternalLink,
 } from 'lucide-react';
 
 export default function MovieDetailsPage() {
@@ -209,11 +211,13 @@ export default function MovieDetailsPage() {
       <div className="relative w-full rounded-3xl overflow-hidden border border-slate-800 shadow-2xl bg-slate-950">
         {/* Backdrop Image */}
         <div className="relative h-[320px] sm:h-[420px] lg:h-[480px] w-full">
-          <Image
-            src={getBackdropUrl(movie.backdropPath, 'original')}
+          <MovieImage
+            src={movie.backdropPath ? getBackdropUrl(movie.backdropPath, 'original') : null}
             alt={movie.title}
+            title={movie.title}
             fill
             priority
+            type="backdrop"
             className="object-cover object-top opacity-60"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent" />
@@ -224,10 +228,12 @@ export default function MovieDetailsPage() {
         <div className="relative z-10 px-6 sm:px-10 pb-8 -mt-36 sm:-mt-48 flex flex-col md:flex-row gap-8 items-start">
           {/* Poster */}
           <div className="relative w-44 sm:w-56 aspect-[2/3] rounded-2xl overflow-hidden shadow-2xl border border-slate-700/80 shrink-0 bg-slate-900 mx-auto md:mx-0">
-            <Image
-              src={getTmdbImageUrl(movie.posterPath, 'w500')}
+            <MovieImage
+              src={movie.posterPath ? getTmdbImageUrl(movie.posterPath, 'w500') : null}
               alt={movie.title}
+              title={movie.title}
               fill
+              type="poster"
               className="object-cover"
             />
           </div>
@@ -426,10 +432,12 @@ export default function MovieDetailsPage() {
                     className="p-3 rounded-2xl bg-slate-950/60 border border-slate-800/80 flex flex-col items-center text-center space-y-2"
                   >
                     <div className="relative w-16 h-16 rounded-full overflow-hidden bg-slate-900 border border-slate-700">
-                      <Image
-                        src={getTmdbImageUrl(cast.profilePath, 'w300')}
+                      <MovieImage
+                        src={cast.profilePath ? getTmdbImageUrl(cast.profilePath, 'w300') : null}
                         alt={cast.name}
+                        title={cast.name}
                         fill
+                        type="avatar"
                         className="object-cover"
                       />
                     </div>
@@ -475,6 +483,123 @@ export default function MovieDetailsPage() {
                 <strong className="text-amber-400">★ {movie.voteAverage}/10</strong>
               </div>
             </div>
+          </div>
+
+          {/* Where to Stream / Watch Options Card */}
+          <div className="p-6 rounded-3xl bg-slate-900/90 border border-slate-800 space-y-4 shadow-xl">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2 text-cyan-400 font-bold text-xs uppercase tracking-wider">
+                <Tv className="w-4 h-4 text-cyan-400" />
+                <span>Where to Stream & Watch</span>
+              </div>
+              <span className="text-[10px] text-slate-400 font-semibold">
+                Powered by TMDB / JustWatch
+              </span>
+            </div>
+
+            {/* Flatrate Streaming (Netflix, Prime, Disney+ Hotstar, JioCinema) */}
+            {movie.watchProviders?.flatrate && movie.watchProviders.flatrate.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                  Included with Subscription
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {movie.watchProviders.flatrate.map((provider) => (
+                    <div
+                      key={provider.providerId}
+                      className="flex items-center space-x-2 px-2.5 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-200 font-medium"
+                    >
+                      {provider.logoPath && (
+                        <div className="relative w-5 h-5 rounded-lg overflow-hidden shrink-0">
+                          <MovieImage
+                            src={getTmdbImageUrl(provider.logoPath, 'w300')}
+                            alt={provider.providerName}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
+                      <span className="truncate">{provider.providerName}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Free / Ad-supported Streaming (YouTube, Tubi, JioCinema, MX Player) */}
+            {movie.watchProviders?.free && movie.watchProviders.free.length > 0 && (
+              <div className="space-y-2 pt-2 border-t border-slate-800">
+                <div className="flex items-center space-x-1 text-[11px] font-semibold text-emerald-400 uppercase tracking-wider">
+                  <span>Free to Stream (with Ads)</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {movie.watchProviders.free.map((provider) => (
+                    <div
+                      key={provider.providerId}
+                      className="flex items-center space-x-2 px-2.5 py-1.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-xs text-emerald-300 font-medium"
+                    >
+                      {provider.logoPath && (
+                        <div className="relative w-5 h-5 rounded-lg overflow-hidden shrink-0">
+                          <MovieImage
+                            src={getTmdbImageUrl(provider.logoPath, 'w300')}
+                            alt={provider.providerName}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
+                      <span className="truncate">{provider.providerName}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Rent or Buy Platforms */}
+            {movie.watchProviders?.rent && movie.watchProviders.rent.length > 0 && (
+              <div className="space-y-2 pt-2 border-t border-slate-800">
+                <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                  Rent or Buy
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {movie.watchProviders.rent.slice(0, 4).map((provider) => (
+                    <div
+                      key={provider.providerId}
+                      className="flex items-center space-x-1.5 px-2 py-1 rounded-lg bg-slate-950/80 border border-slate-800 text-[11px] text-slate-300"
+                    >
+                      {provider.logoPath && (
+                        <div className="relative w-4 h-4 rounded overflow-hidden shrink-0">
+                          <MovieImage
+                            src={getTmdbImageUrl(provider.logoPath, 'w300')}
+                            alt={provider.providerName}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
+                      <span className="truncate">{provider.providerName}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Direct Link or Fallback */}
+            {movie.watchProviders?.link ? (
+              <a
+                href={movie.watchProviders.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center space-x-2 w-full py-2 px-3 rounded-xl bg-gradient-to-r from-cyan-500/20 to-blue-500/20 hover:from-cyan-500/30 hover:to-blue-500/30 border border-cyan-500/40 text-cyan-300 text-xs font-bold transition-all mt-2"
+              >
+                <span>View All Streaming Options</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            ) : (!movie.watchProviders?.flatrate?.length && !movie.watchProviders?.free?.length) && (
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Theatrical release or upcoming title. Official digital streaming platforms will be cataloged here upon release.
+              </p>
+            )}
           </div>
 
           {/* Film Metadata Card */}

@@ -26,6 +26,21 @@ export interface Genre {
   name: string;
 }
 
+export interface WatchProviderItem {
+  providerId: number;
+  providerName: string;
+  logoPath?: string | null;
+  displayPriority?: number;
+}
+
+export interface WatchProviders {
+  link?: string;
+  flatrate?: WatchProviderItem[]; // Streaming (Netflix, Prime Video, Disney+ Hotstar, JioCinema, etc.)
+  free?: WatchProviderItem[];     // Free / Ad-supported streaming
+  rent?: WatchProviderItem[];     // Rental platforms
+  buy?: WatchProviderItem[];      // Purchase platforms
+}
+
 export interface Movie {
   id: number;
   title: string;
@@ -64,6 +79,7 @@ export interface Movie {
     site: string;
     type: string;
   }>;
+  watchProviders?: WatchProviders;
 }
 
 export interface WatchlistItem {

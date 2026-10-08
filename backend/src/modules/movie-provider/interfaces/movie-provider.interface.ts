@@ -51,6 +51,21 @@ export interface MovieDto {
   adult?: boolean;
 }
 
+export interface WatchProviderItemDto {
+  providerId: number;
+  providerName: string;
+  logoPath?: string | null;
+  displayPriority?: number;
+}
+
+export interface WatchProvidersDto {
+  link?: string;
+  flatrate?: WatchProviderItemDto[]; // Streaming (Netflix, Prime Video, Disney+ Hotstar, JioCinema, etc.)
+  free?: WatchProviderItemDto[];     // Free with ads (YouTube Free, Tubi, JioCinema, MX Player)
+  rent?: WatchProviderItemDto[];     // Rental platforms
+  buy?: WatchProviderItemDto[];      // Purchase platforms
+}
+
 export interface MovieDetailDto extends MovieDto {
   runtime?: number;
   tagline?: string;
@@ -63,6 +78,7 @@ export interface MovieDetailDto extends MovieDto {
   director?: string;
   castMembers?: string[];
   imdbId?: string;
+  watchProviders?: WatchProvidersDto;
 }
 
 export interface MovieSearchFilterDto {

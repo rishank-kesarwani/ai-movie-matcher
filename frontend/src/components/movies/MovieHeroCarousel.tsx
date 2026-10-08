@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { Movie } from '../../types';
 import { getBackdropUrl, GENRE_MAP } from '../../lib/constants';
 import { Sparkles, Star, Play, ChevronLeft, ChevronRight, Bookmark } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { apiClient } from '../../lib/api-client';
+import { MovieImage } from '../ui/MovieImage';
 
 interface MovieHeroCarouselProps {
   movies: Movie[];
@@ -57,11 +57,13 @@ export function MovieHeroCarousel({ movies }: MovieHeroCarouselProps) {
   return (
     <div className="relative w-full h-[420px] sm:h-[500px] lg:h-[560px] rounded-3xl overflow-hidden border border-slate-800/80 shadow-2xl mb-12 group">
       {/* Background Image with Cinematic Overlay Gradients */}
-      <Image
-        src={getBackdropUrl(currentMovie.backdropPath, 'original')}
+      <MovieImage
+        src={currentMovie.backdropPath ? getBackdropUrl(currentMovie.backdropPath, 'original') : null}
         alt={currentMovie.title}
+        title={currentMovie.title}
         fill
         priority
+        type="backdrop"
         className="object-cover object-center transition-all duration-700 ease-in-out"
       />
 
