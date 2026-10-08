@@ -4,7 +4,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ChatMessage } from '../../types';
 import { ChatMessageItem } from './ChatMessageItem';
 import { PromptChips } from './PromptChips';
-import { useAuth } from '../../context/AuthContext';
 import { apiClient } from '../../lib/api-client';
 import { Send, Bot, Sparkles, Trash2, Cpu } from 'lucide-react';
 
@@ -20,7 +19,6 @@ export function AiChatWindow() {
   const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { requireAuth } = useAuth();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -35,60 +33,58 @@ export function AiChatWindow() {
     const query = (textToSend || inputValue).trim();
     if (!query || isLoading) return;
 
-    requireAuth(async () => {
-      const newUserMessage: ChatMessage = {
-        role: 'user',
-        content: query,
+    const newUserMessage: ChatMessage = {
+      role: 'user',
+      content: query,
+      timestamp: new Date().toISOString(),
+    };
+
+    const updatedHistory = [...messages, newUserMessage];
+    setMessages(updatedHistory);
+    setInputValue('');
+    setIsLoading(true);
+
+    try {
+      const response: any = await apiClient.post('/ai/chat', {
+        messages: updatedHistory.map((m) => ({
+          role: m.role,
+          content: m.content,
+        })),
+      });
+
+      const payload = response?.data !== undefined ? response.data : response;
+      const replyText =
+        payload?.reply ||
+        payload?.response ||
+        payload?.content ||
+        payload?.message ||
+        payload?.text ||
+        (typeof payload === 'string' ? payload : '') ||
+        'Here are the recommendations matching your taste:';
+
+      const suggestedMovies = payload?.suggestedMovies || payload?.movies || [];
+      const enrichedMovies = payload?.enrichedMovies || payload?.movies || [];
+
+      const assistantReply: ChatMessage = {
+        role: 'assistant',
+        content: replyText,
+        suggestedMovies,
+        enrichedMovies,
         timestamp: new Date().toISOString(),
       };
 
-      const updatedHistory = [...messages, newUserMessage];
-      setMessages(updatedHistory);
-      setInputValue('');
-      setIsLoading(true);
-
-      try {
-        const response: any = await apiClient.post('/ai/chat', {
-          messages: updatedHistory.map((m) => ({
-            role: m.role,
-            content: m.content,
-          })),
-        });
-
-        const payload = response?.data !== undefined ? response.data : response;
-        const replyText =
-          payload?.reply ||
-          payload?.response ||
-          payload?.content ||
-          payload?.message ||
-          payload?.text ||
-          (typeof payload === 'string' ? payload : '') ||
-          'Here are the recommendations matching your taste:';
-
-        const suggestedMovies = payload?.suggestedMovies || payload?.movies || [];
-        const enrichedMovies = payload?.enrichedMovies || payload?.movies || [];
-
-        const assistantReply: ChatMessage = {
-          role: 'assistant',
-          content: replyText,
-          suggestedMovies,
-          enrichedMovies,
-          timestamp: new Date().toISOString(),
-        };
-
-        setMessages((prev) => [...prev, assistantReply]);
-      } catch (err: any) {
-        const errorMessage: ChatMessage = {
-          role: 'assistant',
-          content:
-            err.message ||
-            'I encountered an issue connecting to the AI Platform. Please try asking again in a moment.',
-        };
-        setMessages((prev) => [...prev, errorMessage]);
-      } finally {
-        setIsLoading(false);
-      }
-    }, 'Log in to have conversations with the CineMatch AI Assistant.');
+      setMessages((prev) => [...prev, assistantReply]);
+    } catch (err: any) {
+      const errorMessage: ChatMessage = {
+        role: 'assistant',
+        content:
+          err.message ||
+          'I encountered an issue connecting to the AI Platform. Please try asking again in a moment.',
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
