@@ -36,7 +36,7 @@ export class AiPlatformClient {
 
     this.client = axios.create({
       baseURL: this.baseUrl,
-      timeout: this.configService.get<number>('aiPlatform.timeoutMs', 60000),
+      timeout: this.configService.get<number>('aiPlatform.timeoutMs', 10000),
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': this.apiKey,
@@ -150,31 +150,196 @@ export class AiPlatformClient {
     let reply = `Here are some great movie recommendations based on your request: "${lastUserMessage}".`;
     let suggestedMovies = [
       {
-        title: 'Arrival',
-        tmdbId: 329865,
+        title: '3 Idiots',
+        tmdbId: 20453,
+        year: 2009,
+        matchReason:
+          'Rajkumar Hirani\'s legendary Bollywood masterpiece on following your passion, friendship, and challenging educational norms.',
+      },
+      {
+        title: 'Dangal',
+        tmdbId: 360814,
         year: 2016,
         matchReason:
-          'Deep, thought-provoking science fiction with masterful pacing and poignant emotional themes.',
+          'Inspiring, emotional sports drama about breaking barriers, female empowerment, and relentless family determination.',
       },
       {
-        title: 'Everything Everywhere All at Once',
-        tmdbId: 545611,
-        year: 2022,
+        title: 'Swades',
+        tmdbId: 16738,
+        year: 2004,
         matchReason:
-          'Fast-paced, creative multiverse adventure blending humor, heart, and high visual energy.',
-      },
-      {
-        title: 'Blade Runner 2049',
-        tmdbId: 335984,
-        year: 2017,
-        matchReason:
-          'Atmospheric cinematography and deep neo-noir mystery exploring what it means to be human.',
+          'Soul-stirring story of a NASA scientist rediscovering his roots and empowering grassroots communities in rural India.',
       },
     ];
 
-    if (lower.includes('interstellar') || (lower.includes('less serious') && lower.includes('2 hour'))) {
+    // 1. Bollywood & Indian Inspirational Masterpieces
+    if (
+      lower.includes('bollywood') ||
+      lower.includes('hindi') ||
+      lower.includes('3 idiots') ||
+      lower.includes('dangal') ||
+      lower.includes('swades') ||
+      lower.includes('lagaan') ||
+      lower.includes('taare zameen par') ||
+      lower.includes('chak de') ||
+      lower.includes('inspirational')
+    ) {
       reply =
-        'Looking for something with the mind-bending wonder of Interstellar, but with a lighter tone and crisp runtime under 120 minutes! Here are stellar picks that balance cosmic thrills with energetic entertainment:';
+        'Here are the most celebrated, emotionally resonant Bollywood inspirational masterpieces that celebrate perseverance, passion, and social change:';
+      suggestedMovies = [
+        {
+          title: '3 Idiots',
+          tmdbId: 20453,
+          year: 2009,
+          matchReason:
+            'The benchmark of Indian inspirational cinema blending sharp humor, emotional depth, and a timeless message on pursuing excellence over success.',
+        },
+        {
+          title: 'Dangal',
+          tmdbId: 360814,
+          year: 2016,
+          matchReason:
+            'Aamir Khan\'s gripping biographical sports epic celebrating parental sacrifice, grit, and international athletic glory against all social odds.',
+        },
+        {
+          title: 'Swades',
+          tmdbId: 16738,
+          year: 2004,
+          matchReason:
+            'Ashutosh Gowariker and Shah Rukh Khan\'s deeply moving tribute to grassroots transformation, nation-building, and moral duty.',
+        },
+        {
+          title: 'Taare Zameen Par',
+          tmdbId: 7508,
+          year: 2007,
+          matchReason:
+            'A heartfelt, tear-jerking classic highlighting child empathy, neurodiversity, and the transformative power of compassionate mentorship.',
+        },
+        {
+          title: 'Lagaan',
+          tmdbId: 1966,
+          year: 2001,
+          matchReason:
+            'Oscar-nominated historical underdog epic where a courageous village unites against colonial oppression in a high-stakes cricket match.',
+        },
+      ];
+    }
+    // 2. South Indian Action Blockbusters & Mass Spectacles
+    else if (
+      lower.includes('south indian') ||
+      lower.includes('tollywood') ||
+      lower.includes('kollywood') ||
+      lower.includes('mollywood') ||
+      lower.includes('rrr') ||
+      lower.includes('baahubali') ||
+      lower.includes('kgf') ||
+      lower.includes('pushpa') ||
+      lower.includes('kantara') ||
+      lower.includes('vikram') ||
+      lower.includes('telugu') ||
+      lower.includes('tamil') ||
+      lower.includes('malayalam')
+    ) {
+      reply =
+        'Here are grand, adrenaline-pumping South Indian and Pan-Indian cinematic spectacles with breathtaking action and mythic storytelling:';
+      suggestedMovies = [
+        {
+          title: 'RRR',
+          tmdbId: 579974,
+          year: 2022,
+          matchReason:
+            'S.S. Rajamouli\'s global Oscar-winning action epic featuring gravity-defying set-pieces, fierce brotherhood, and revolutionary fervor.',
+        },
+        {
+          title: 'Baahubali: The Beginning',
+          tmdbId: 256040,
+          year: 2015,
+          matchReason:
+            'The monumental fantasy epic that redefined Indian visual scale, royal intrigue, and cinematic world-building.',
+        },
+        {
+          title: 'K.G.F: Chapter 1',
+          tmdbId: 554316,
+          year: 2018,
+          matchReason:
+            'A gritty, ultra-stylish mass hero saga of ambition and rebellion in the gold fields of Kolar.',
+        },
+      ];
+    }
+    // 3. Korean Cinema & K-Thrillers
+    else if (
+      lower.includes('korean') ||
+      lower.includes('k-drama') ||
+      lower.includes('parasite') ||
+      lower.includes('memories of murder') ||
+      lower.includes('oldboy') ||
+      lower.includes('busan') ||
+      lower.includes('korea')
+    ) {
+      reply =
+        'Here are riveting Korean cinematic gems celebrated for unpredictable twists, social commentary, and masterclass suspense:';
+      suggestedMovies = [
+        {
+          title: 'Parasite',
+          tmdbId: 496243,
+          year: 2019,
+          matchReason:
+            'Bong Joon-ho\'s historic multi-Oscar winning masterpiece on class divide, dark comedy, and razor-sharp suspense.',
+        },
+        {
+          title: 'Memories of Murder',
+          tmdbId: 11423,
+          year: 2003,
+          matchReason:
+            'Atmospheric, haunting detective mystery based on true events, setting the gold standard for crime cinema.',
+        },
+        {
+          title: 'Train to Busan',
+          tmdbId: 396535,
+          year: 2016,
+          matchReason:
+            'High-velocity emotional survival thriller that blends relentless thrills with heartfelt family devotion.',
+        },
+      ];
+    }
+    // 4. Anime & Japanese Cinema
+    else if (
+      lower.includes('anime') ||
+      lower.includes('japanese') ||
+      lower.includes('spirited away') ||
+      lower.includes('ghibli') ||
+      lower.includes('your name') ||
+      lower.includes('miyazaki')
+    ) {
+      reply =
+        'Here are enchanting, visually breathtaking anime masterpieces with timeless emotional beauty and imaginative worlds:';
+      suggestedMovies = [
+        {
+          title: 'Spirited Away',
+          tmdbId: 129,
+          year: 2001,
+          matchReason:
+            'Hayao Miyazaki\'s Oscar-winning fantasy journey into a mystical spirit world, bursting with wonder and heart.',
+        },
+        {
+          title: 'Your Name.',
+          tmdbId: 372058,
+          year: 2016,
+          matchReason:
+            'Makoto Shinkai\'s stunning romantic fantasy exploring fate, connection, and cosmic wonder across time.',
+        },
+      ];
+    }
+    // 5. Interstellar & Mind-Bending Sci-Fi
+    else if (
+      lower.includes('interstellar') ||
+      lower.includes('inception') ||
+      lower.includes('sci-fi') ||
+      lower.includes('mind-bending') ||
+      (lower.includes('less serious') && lower.includes('2 hour'))
+    ) {
+      reply =
+        'Looking for mind-bending cosmic exploration or clever sci-fi thrills! Here are top picks with great pacing and high concept concepts:';
       suggestedMovies = [
         {
           title: 'Everything Everywhere All at Once',
@@ -191,23 +356,32 @@ export class AiPlatformClient {
             'A tightly focused 116-minute first-contact masterpiece that offers cerebral cosmic exploration with deep emotional payoff.',
         },
         {
-          title: 'Spirited Away',
-          tmdbId: 129,
-          year: 2001,
+          title: 'Inception',
+          tmdbId: 27205,
+          year: 2010,
           matchReason:
-            'A wondrous journey into the unknown that sparks pure awe with playful imagination and legendary artistry.',
+            'Christopher Nolan\'s iconic subconscious heist film with multi-layered realities and thrilling pacing.',
         },
       ];
-    } else if (lower.includes('friday') || lower.includes('funny') || lower.includes('comedy')) {
+    }
+    // 6. Feel-Good, Comedy & Friday Night
+    else if (
+      lower.includes('friday') ||
+      lower.includes('funny') ||
+      lower.includes('comedy') ||
+      lower.includes('feel-good') ||
+      lower.includes('travel') ||
+      lower.includes('friendship')
+    ) {
       reply =
-        'Perfect for a relaxed Friday movie night! Here are sharp, witty, and engaging crowd-pleasers to kick off your weekend:';
+        'Perfect for a relaxed movie night! Here are uplifting, humorous crowd-pleasers celebrating friendship and adventure:';
       suggestedMovies = [
         {
-          title: 'Parasite',
-          tmdbId: 496243,
-          year: 2019,
+          title: 'Zindagi Na Milegi Dobara',
+          tmdbId: 71805,
+          year: 2011,
           matchReason:
-            'A gripping dark comedy and suspense thriller that keeps you glued to the screen from start to finish.',
+            'The ultimate Spanish road trip comedy-drama on friendship, overcoming fears, and living life to the fullest.',
         },
         {
           title: 'Everything Everywhere All at Once',
@@ -215,6 +389,13 @@ export class AiPlatformClient {
           year: 2022,
           matchReason:
             'An inventive, laugh-out-loud funny and visually stunning cinematic roller-coaster.',
+        },
+        {
+          title: '3 Idiots',
+          tmdbId: 20453,
+          year: 2009,
+          matchReason:
+            'A delightful, laugh-filled journey of college camaraderie, witty escapades, and heartfelt life lessons.',
         },
       ];
     }
