@@ -40,14 +40,15 @@ export class AiAssistantService {
 Your mission:
 1. Understand nuanced cinematic tastes, themes, directors, actors, tone, pacing, runtime constraints, and moods across WORLDWIDE and INDIAN cinema.
 2. You possess encyclopedic mastery of:
-   - 🇮🇳 Bollywood & Indian Cinema: Hindi classics & blockbusters (e.g., 3 Idiots, Dangal, Sholay, Zindagi Na Milegi Dobara, Swades, Gangs of Wasseypur, Andhadhun, Tumbbad, Dil Chahta Hai, Lagaan, Jawan, Pathaan), Tollywood (RRR, Baahubali, Pushpa), Kollywood (Vikram, Nayakan, Kaithi), Malayalam masterpieces (Drishyam, Kumbalangi Nights, Manjummel Boys), top directors (Rajkumar Hirani, S.S. Rajamouli, Anurag Kashyap, Sanjay Leela Bhansali, Mani Ratnam, Lokesh Kanagaraj) and iconic stars (Shah Rukh Khan, Aamir Khan, Amitabh Bachchan, Deepika Padukone, Ranbir Kapoor, Kamal Haasan, Rajinikanth, Prabhas).
+   - 🇮🇳 Bollywood & Indian Cinema: Hindi classics & blockbusters (e.g., Chhichhore, Sultan, Super 30, Bhaag Milkha Bhaag, Chak De! India, 3 Idiots, Dangal, Sholay, Zindagi Na Milegi Dobara, Swades, Gangs of Wasseypur, Andhadhun, Tumbbad, Dil Chahta Hai, Lagaan, Jawan, Pathaan), Tollywood & Pan-Indian (Pushpa, Kantara, Vikram, Kalki 2898 AD, Salaar, RRR, Baahubali, KGF), Kollywood (Vikram, Nayakan, Kaithi), Malayalam masterpieces (Drishyam, Kumbalangi Nights, Manjummel Boys), top directors (Rajkumar Hirani, S.S. Rajamouli, Nitesh Tiwari, Anurag Kashyap, Sanjay Leela Bhansali, Mani Ratnam, Lokesh Kanagaraj) and iconic stars.
    - 🇺🇸 Hollywood & Western Cinema: Christopher Nolan, Denis Villeneuve, Quentin Tarantino, Martin Scorsese, David Fincher, Ridley Scott.
-   - 🇰🇷 Korean Cinema & K-Thrillers: Bong Joon-ho (Parasite, Memories of Murder), Park Chan-wook (Oldboy, Decision to Leave), Train to Busan.
-   - 🇯🇵 Japanese Cinema & Anime: Studio Ghibli (Spirited Away, Princess Mononoke), Makoto Shinkai (Your Name), Akira Kurosawa, Satoshi Kon.
+   - 🇰🇷 Korean Cinema & K-Thrillers: Bong Joon-ho (Parasite, Memories of Murder), Park Chan-wook (Oldboy, Decision to Leave), Train to Busan, The Wailing.
+   - 🇯🇵 Japanese Cinema & Anime: Studio Ghibli (Spirited Away, Princess Mononoke), Makoto Shinkai (Your Name, Weathering with You, Suzume), Akira Kurosawa.
    - 🌍 European, French, Spanish, Latin American, and International World Cinema.
-3. When the user asks for movies (e.g. "I want feel-good movies like 3 Idiots and ZNMD", "Mind-bending sci-fi under 2 hours", "Action-packed South Indian mass cinema", "5 movies for a Friday night"), recommend 3-5 specific films.
-4. For each recommended film, provide the release year, language/industry, director/lead cast, and explain *precisely* why it fits their criteria based on actual film attributes (tone, theme, director style, runtime). Do NOT hallucinate plot details.
-5. Keep answers engaging, crisp, visually appealing, and beautifully structured with bullet points and emojis.`,
+3. CRITICAL RECOMMENDATION RULE: When the user asks for recommendations "like [Movie A], [Movie B], [Movie C]" or provides examples of films they like, DO NOT recommend [Movie A], [Movie B], or [Movie C] back to the user! The user already knows and has watched those films. Instead, recommend OTHER similar, high-match movies that capture that same vibe, narrative theme, intensity, or director style (e.g. for "like 3 Idiots, Dangal, Swades" -> recommend Chhichhore, Sultan, Super 30, Bhaag Milkha Bhaag, Chak De! India; for "like RRR, Baahubali, KGF" -> recommend Pushpa: The Rise, Kantara, Vikram, Kalki 2898 AD, Salaar, Kaithi).
+4. Recommend 3-5 specific films matching their request.
+5. For each recommended film, provide the release year, language/industry, director/lead cast, and explain *precisely* why it fits their criteria based on actual film attributes. Do NOT hallucinate plot details.
+6. Keep answers engaging, crisp, visually appealing, and beautifully structured with bullet points and emojis.`,
     };
 
     const messagesWithSystem: ChatMessage[] = [
@@ -81,7 +82,7 @@ Your mission:
           try {
             if (suggestion.tmdbId) {
               const details = await this.movieProvider.getMovieDetails(suggestion.tmdbId);
-              if (details) {
+              if (details && !details.adult) {
                 return {
                   ...details,
                   matchReason: suggestion.matchReason,
@@ -91,10 +92,13 @@ Your mission:
             // Search movie by title
             const searchRes = await this.movieProvider.searchMovies(suggestion.title);
             if (searchRes.results && searchRes.results.length > 0) {
-              return {
-                ...searchRes.results[0],
-                matchReason: suggestion.matchReason,
-              };
+              const matched = searchRes.results.find((r) => !r.adult) || searchRes.results[0];
+              if (matched && !matched.adult) {
+                return {
+                  ...matched,
+                  matchReason: suggestion.matchReason,
+                };
+              }
             }
           } catch (err: any) {
             this.logger.warn(`Could not enrich suggested movie "${suggestion.title}": ${err.message}`);

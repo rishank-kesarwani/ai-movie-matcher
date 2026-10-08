@@ -147,84 +147,111 @@ export class AiPlatformClient {
       [...messages].reverse().find((m) => m.role === 'user')?.content || '';
     const lower = lastUserMessage.toLowerCase();
 
-    let reply = `Here are some great movie recommendations based on your request: "${lastUserMessage}".`;
-    let suggestedMovies = [
-      {
-        title: '3 Idiots',
-        tmdbId: 20453,
-        year: 2009,
-        matchReason:
-          'Rajkumar Hirani\'s legendary Bollywood masterpiece on following your passion, friendship, and challenging educational norms.',
-      },
-      {
-        title: 'Dangal',
-        tmdbId: 360814,
-        year: 2016,
-        matchReason:
-          'Inspiring, emotional sports drama about breaking barriers, female empowerment, and relentless family determination.',
-      },
-      {
-        title: 'Swades',
-        tmdbId: 16738,
-        year: 2004,
-        matchReason:
-          'Soul-stirring story of a NASA scientist rediscovering his roots and empowering grassroots communities in rural India.',
-      },
-    ];
+    // Helper to check if user mentioned a title
+    const userMentioned = (titleOrKeywords: string[]): boolean => {
+      return titleOrKeywords.some((kw) => lower.includes(kw.toLowerCase()));
+    };
 
-    // 1. Bollywood & Indian Inspirational Masterpieces
+    let reply = `Here are top recommendations matching your taste for "${lastUserMessage}":`;
+    let candidatePool: Array<{
+      title: string;
+      tmdbId: number;
+      year: number;
+      keywords: string[];
+      matchReason: string;
+    }> = [];
+
+    // 1. Bollywood & Indian Inspirational / Social Drama / Underdog
     if (
       lower.includes('bollywood') ||
       lower.includes('hindi') ||
+      lower.includes('inspirational') ||
       lower.includes('3 idiots') ||
       lower.includes('dangal') ||
       lower.includes('swades') ||
+      lower.includes('chhichhore') ||
+      lower.includes('sultan') ||
       lower.includes('lagaan') ||
-      lower.includes('taare zameen par') ||
-      lower.includes('chak de') ||
-      lower.includes('inspirational')
+      lower.includes('chak de')
     ) {
       reply =
-        'Here are the most celebrated, emotionally resonant Bollywood inspirational masterpieces that celebrate perseverance, passion, and social change:';
-      suggestedMovies = [
+        'Here are celebrated, emotionally resonant Bollywood masterpieces with similar uplifting underdog spirit, friendship, and relentless determination:';
+      candidatePool = [
         {
-          title: '3 Idiots',
-          tmdbId: 20453,
-          year: 2009,
+          title: 'Chhichhore',
+          tmdbId: 592834,
+          year: 2019,
+          keywords: ['chhichhore', 'chhichore'],
           matchReason:
-            'The benchmark of Indian inspirational cinema blending sharp humor, emotional depth, and a timeless message on pursuing excellence over success.',
+            'Directed by Nitesh Tiwari (Dangal), this heartfelt comedy-drama captures hostel camaraderie, overcoming societal pressure, and celebrating effort over outcome just like 3 Idiots.',
         },
         {
-          title: 'Dangal',
-          tmdbId: 360814,
+          title: 'Sultan',
+          tmdbId: 386004,
           year: 2016,
+          keywords: ['sultan'],
           matchReason:
-            'Aamir Khan\'s gripping biographical sports epic celebrating parental sacrifice, grit, and international athletic glory against all social odds.',
+            'A stirring, emotionally charged wrestling and sports redemption saga celebrating grit, dedication, and personal triumph against all odds.',
+        },
+        {
+          title: 'Super 30',
+          tmdbId: 535292,
+          year: 2019,
+          keywords: ['super 30', 'super30', 'anand kumar'],
+          matchReason:
+            'The true underdog journey of rural genius students defying systemic poverty through education, echoing the inspiring ideals of 3 Idiots and Swades.',
+        },
+        {
+          title: 'Bhaag Milkha Bhaag',
+          tmdbId: 192136,
+          year: 2013,
+          keywords: ['bhaag milkha bhaag', 'milkha singh'],
+          matchReason:
+            'An electrifying biographical sports masterpiece celebrating relentless perseverance, overcoming deep trauma, and national pride.',
+        },
+        {
+          title: 'Chak De! India',
+          tmdbId: 4959,
+          year: 2007,
+          keywords: ['chak de', 'chak de india'],
+          matchReason:
+            'Shah Rukh Khan leads an underdog women\'s hockey team to world glory in a high-stakes, passionate tribute to teamwork and patriotism.',
+        },
+        {
+          title: 'Taare Zameen Par (Like Stars on Earth)',
+          tmdbId: 7508,
+          year: 2007,
+          keywords: ['taare zameen par', 'like stars on earth'],
+          matchReason:
+            'A heartfelt classic on empathy, child individuality, and the transformative power of compassionate mentorship.',
         },
         {
           title: 'Swades',
           tmdbId: 16738,
           year: 2004,
+          keywords: ['swades'],
           matchReason:
-            'Ashutosh Gowariker and Shah Rukh Khan\'s deeply moving tribute to grassroots transformation, nation-building, and moral duty.',
+            'Ashutosh Gowariker and Shah Rukh Khan\'s moving tribute to grassroots transformation, nation-building, and social responsibility.',
         },
         {
-          title: 'Taare Zameen Par',
-          tmdbId: 7508,
-          year: 2007,
+          title: 'Dangal',
+          tmdbId: 360814,
+          year: 2016,
+          keywords: ['dangal'],
           matchReason:
-            'A heartfelt, tear-jerking classic highlighting child empathy, neurodiversity, and the transformative power of compassionate mentorship.',
+            'Gripping biographical sports drama celebrating grit, discipline, and women breaking barriers on the international stage.',
         },
         {
-          title: 'Lagaan',
-          tmdbId: 1966,
-          year: 2001,
+          title: '3 Idiots',
+          tmdbId: 20453,
+          year: 2009,
+          keywords: ['3 idiots', 'three idiots'],
           matchReason:
-            'Oscar-nominated historical underdog epic where a courageous village unites against colonial oppression in a high-stakes cricket match.',
+            'The benchmark of Indian inspirational cinema blending humor and deep emotion on pursuing passion over blind competition.',
         },
       ];
     }
-    // 2. South Indian Action Blockbusters & Mass Spectacles
+    // 2. South Indian & Pan-Indian Action Spectacles
     else if (
       lower.includes('south indian') ||
       lower.includes('tollywood') ||
@@ -236,40 +263,85 @@ export class AiPlatformClient {
       lower.includes('pushpa') ||
       lower.includes('kantara') ||
       lower.includes('vikram') ||
+      lower.includes('action') ||
+      lower.includes('spectacle') ||
       lower.includes('telugu') ||
       lower.includes('tamil') ||
+      lower.includes('kannada') ||
       lower.includes('malayalam')
     ) {
       reply =
-        'Here are grand, adrenaline-pumping South Indian and Pan-Indian cinematic spectacles with breathtaking action and mythic storytelling:';
-      suggestedMovies = [
+        'Here are grand, adrenaline-pumping Pan-Indian action spectacles packed with mythic visual scale, mass heroism, and breathtaking set-pieces:';
+      candidatePool = [
         {
-          title: 'RRR',
-          tmdbId: 579974,
-          year: 2022,
+          title: 'Pushpa: The Rise',
+          tmdbId: 690957,
+          year: 2021,
+          keywords: ['pushpa', 'allu arjun'],
           matchReason:
-            'S.S. Rajamouli\'s global Oscar-winning action epic featuring gravity-defying set-pieces, fierce brotherhood, and revolutionary fervor.',
+            'An explosive mass-action saga of an underdog coolie conquering the red sandalwood syndicate with razor-sharp swagger and raw intensity.',
+        },
+        {
+          title: 'Kantara',
+          tmdbId: 1024546,
+          year: 2022,
+          keywords: ['kantara'],
+          matchReason:
+            'A visually spellbinding, primal folklore action masterpiece blending divine spirit traditions, forest conflicts, and goosebump-inducing climaxes.',
+        },
+        {
+          title: 'Vikram',
+          tmdbId: 825672,
+          year: 2022,
+          keywords: ['vikram', 'lokesh'],
+          matchReason:
+            'Kamal Haasan and Lokesh Kanagaraj deliver an exhilarating, fast-paced cinematic universe action thriller with world-class action choreography.',
+        },
+        {
+          title: 'Kalki 2898 AD',
+          tmdbId: 792307,
+          year: 2024,
+          keywords: ['kalki', 'kalki 2898 ad'],
+          matchReason:
+            'A landmark dystopian sci-fi mythic spectacle with Amitabh Bachchan and Prabhas combining Indian epic lore with monumental Hollywood-tier VFX.',
+        },
+        {
+          title: 'Salaar: Part 1 – Ceasefire',
+          tmdbId: 907083,
+          year: 2023,
+          keywords: ['salaar'],
+          matchReason:
+            'Prashanth Neel (director of K.G.F) brings back his signature volcanic action aesthetic in a brutal world of warlords and sworn brotherhood.',
         },
         {
           title: 'Baahubali: The Beginning',
           tmdbId: 256040,
           year: 2015,
+          keywords: ['baahubali', 'bahubali'],
           matchReason:
             'The monumental fantasy epic that redefined Indian visual scale, royal intrigue, and cinematic world-building.',
         },
         {
+          title: 'RRR',
+          tmdbId: 579974,
+          year: 2022,
+          keywords: ['rrr'],
+          matchReason:
+            'S.S. Rajamouli\'s global Oscar-winning action epic featuring gravity-defying set-pieces, fierce brotherhood, and revolutionary fervor.',
+        },
+        {
           title: 'K.G.F: Chapter 1',
-          tmdbId: 554316,
+          tmdbId: 554477,
           year: 2018,
+          keywords: ['kgf', 'k.g.f'],
           matchReason:
             'A gritty, ultra-stylish mass hero saga of ambition and rebellion in the gold fields of Kolar.',
         },
       ];
     }
-    // 3. Korean Cinema & K-Thrillers
+    // 3. Korean Cinema & Thrillers
     else if (
       lower.includes('korean') ||
-      lower.includes('k-drama') ||
       lower.includes('parasite') ||
       lower.includes('memories of murder') ||
       lower.includes('oldboy') ||
@@ -277,28 +349,47 @@ export class AiPlatformClient {
       lower.includes('korea')
     ) {
       reply =
-        'Here are riveting Korean cinematic gems celebrated for unpredictable twists, social commentary, and masterclass suspense:';
-      suggestedMovies = [
+        'Here are riveting Korean cinematic gems celebrated for unpredictable twists, razor-sharp suspense, and deep character psychology:';
+      candidatePool = [
         {
-          title: 'Parasite',
-          tmdbId: 496243,
-          year: 2019,
+          title: 'Decision to Leave',
+          tmdbId: 705996,
+          year: 2022,
+          keywords: ['decision to leave'],
           matchReason:
-            'Bong Joon-ho\'s historic multi-Oscar winning masterpiece on class divide, dark comedy, and razor-sharp suspense.',
+            'Park Chan-wook\'s spellbinding, Cannes-winning romantic mystery thriller featuring exquisite visual poetry and suspense.',
         },
         {
-          title: 'Memories of Murder',
-          tmdbId: 11423,
-          year: 2003,
+          title: 'The Wailing',
+          tmdbId: 293670,
+          year: 2016,
+          keywords: ['the wailing'],
           matchReason:
-            'Atmospheric, haunting detective mystery based on true events, setting the gold standard for crime cinema.',
+            'A masterclass occult thriller with escalating tension, atmospheric dread, and jaw-dropping plot twists in a rural village.',
+        },
+        {
+          title: 'I Saw the Devil',
+          tmdbId: 49797,
+          year: 2010,
+          keywords: ['i saw the devil'],
+          matchReason:
+            'An intense, breathless cat-and-mouse revenge thriller pushing the boundaries of psychological tension.',
         },
         {
           title: 'Train to Busan',
           tmdbId: 396535,
           year: 2016,
+          keywords: ['train to busan', 'busan'],
           matchReason:
-            'High-velocity emotional survival thriller that blends relentless thrills with heartfelt family devotion.',
+            'High-velocity emotional survival thriller blending relentless pacing with powerful family devotion.',
+        },
+        {
+          title: 'Parasite',
+          tmdbId: 496243,
+          year: 2019,
+          keywords: ['parasite'],
+          matchReason:
+            'Bong Joon-ho\'s historic multi-Oscar winning masterpiece on class divide, dark comedy, and razor-sharp suspense.',
         },
       ];
     }
@@ -313,92 +404,152 @@ export class AiPlatformClient {
     ) {
       reply =
         'Here are enchanting, visually breathtaking anime masterpieces with timeless emotional beauty and imaginative worlds:';
-      suggestedMovies = [
+      candidatePool = [
+        {
+          title: 'Weathering with You',
+          tmdbId: 568160,
+          year: 2019,
+          keywords: ['weathering with you'],
+          matchReason:
+            'Makoto Shinkai\'s gorgeous follow-up to Your Name, filled with magnificent atmospheric animation and moving romantic fantasy.',
+        },
+        {
+          title: 'Princess Mononoke',
+          tmdbId: 128,
+          year: 1997,
+          keywords: ['princess mononoke', 'mononoke'],
+          matchReason:
+            'Hayao Miyazaki\'s epic fantasy classic on the conflict between nature gods and human industry, filled with profound depth.',
+        },
+        {
+          title: 'A Silent Voice',
+          tmdbId: 378064,
+          year: 2016,
+          keywords: ['a silent voice', 'silent voice'],
+          matchReason:
+            'A deeply moving, empathetic coming-of-age drama exploring redemption, forgiveness, and human vulnerability.',
+        },
         {
           title: 'Spirited Away',
           tmdbId: 129,
           year: 2001,
+          keywords: ['spirited away'],
           matchReason:
             'Hayao Miyazaki\'s Oscar-winning fantasy journey into a mystical spirit world, bursting with wonder and heart.',
         },
-        {
-          title: 'Your Name.',
-          tmdbId: 372058,
-          year: 2016,
-          matchReason:
-            'Makoto Shinkai\'s stunning romantic fantasy exploring fate, connection, and cosmic wonder across time.',
-        },
       ];
     }
-    // 5. Interstellar & Mind-Bending Sci-Fi
+    // 5. Mind-Bending Sci-Fi
     else if (
       lower.includes('interstellar') ||
       lower.includes('inception') ||
       lower.includes('sci-fi') ||
       lower.includes('mind-bending') ||
+      lower.includes('space') ||
       (lower.includes('less serious') && lower.includes('2 hour'))
     ) {
       reply =
-        'Looking for mind-bending cosmic exploration or clever sci-fi thrills! Here are top picks with great pacing and high concept concepts:';
-      suggestedMovies = [
+        'Looking for mind-bending cosmic exploration or clever high-concept sci-fi! Here are top picks with magnificent storytelling and pacing:';
+      candidatePool = [
         {
           title: 'Everything Everywhere All at Once',
           tmdbId: 545611,
           year: 2022,
+          keywords: ['everything everywhere all at once', 'everything everywhere'],
           matchReason:
-            'Delivers mind-bending multiverses and existential questions like Interstellar, but packed with comedy and vibrant action.',
+            'Delivers mind-bending multiverses and existential questions like Interstellar, but packed with humor and vibrant action.',
         },
         {
           title: 'Arrival',
           tmdbId: 329865,
           year: 2016,
+          keywords: ['arrival'],
           matchReason:
-            'A tightly focused 116-minute first-contact masterpiece that offers cerebral cosmic exploration with deep emotional payoff.',
+            'Denis Villeneuve\'s tightly focused 116-minute first-contact masterpiece offering cerebral cosmic exploration with deep emotional payoff.',
+        },
+        {
+          title: 'Tenet',
+          tmdbId: 577922,
+          year: 2020,
+          keywords: ['tenet'],
+          matchReason:
+            'Christopher Nolan\'s time-inversion espionage thrill-ride with spectacular practical set-pieces and puzzle-box storytelling.',
         },
         {
           title: 'Inception',
           tmdbId: 27205,
           year: 2010,
+          keywords: ['inception'],
           matchReason:
             'Christopher Nolan\'s iconic subconscious heist film with multi-layered realities and thrilling pacing.',
         },
+        {
+          title: 'Interstellar',
+          tmdbId: 157336,
+          year: 2014,
+          keywords: ['interstellar'],
+          matchReason:
+            'A breathtaking journey across wormholes and temporal physics to find a new home for mankind.',
+        },
       ];
     }
-    // 6. Feel-Good, Comedy & Friday Night
-    else if (
-      lower.includes('friday') ||
-      lower.includes('funny') ||
-      lower.includes('comedy') ||
-      lower.includes('feel-good') ||
-      lower.includes('travel') ||
-      lower.includes('friendship')
-    ) {
+    // 6. Feel-Good, Comedy & Road Trip
+    else {
       reply =
-        'Perfect for a relaxed movie night! Here are uplifting, humorous crowd-pleasers celebrating friendship and adventure:';
-      suggestedMovies = [
+        'Here are uplifting, humorous crowd-pleasers celebrating friendship, discovery, and adventurous life journeys:';
+      candidatePool = [
         {
           title: 'Zindagi Na Milegi Dobara',
           tmdbId: 71805,
           year: 2011,
+          keywords: ['zindagi na milegi dobara', 'znmd'],
           matchReason:
             'The ultimate Spanish road trip comedy-drama on friendship, overcoming fears, and living life to the fullest.',
+        },
+        {
+          title: 'Chhichhore',
+          tmdbId: 592834,
+          year: 2019,
+          keywords: ['chhichhore', 'chhichore'],
+          matchReason:
+            'A joyful yet poignant college nostalgia trip filled with witty hostel antics and an inspiring message for life.',
         },
         {
           title: 'Everything Everywhere All at Once',
           tmdbId: 545611,
           year: 2022,
+          keywords: ['everything everywhere all at once'],
           matchReason:
             'An inventive, laugh-out-loud funny and visually stunning cinematic roller-coaster.',
         },
         {
-          title: '3 Idiots',
-          tmdbId: 20453,
-          year: 2009,
+          title: 'Super 30',
+          tmdbId: 535292,
+          year: 2019,
+          keywords: ['super 30', 'super30'],
           matchReason:
-            'A delightful, laugh-filled journey of college camaraderie, witty escapades, and heartfelt life lessons.',
+            'A heartwarming, high-energy underdog triumph showing the power of dedicated mentorship.',
         },
       ];
     }
+
+    // Filter out movies that the user explicitly mentioned as reference in their prompt
+    let filteredMovies = candidatePool.filter((item) => {
+      const isMentioned = userMentioned(item.keywords);
+      return !isMentioned;
+    });
+
+    // If filtering excluded all (rare), fall back to all candidates
+    if (filteredMovies.length === 0) {
+      filteredMovies = candidatePool;
+    }
+
+    const suggestedMovies = filteredMovies.slice(0, 5).map((m) => ({
+      title: m.title,
+      tmdbId: m.tmdbId,
+      year: m.year,
+      matchReason: m.matchReason,
+    }));
 
     return {
       reply,
