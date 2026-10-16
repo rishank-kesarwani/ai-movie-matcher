@@ -212,12 +212,13 @@ export default function MovieDetailsPage() {
         {/* Backdrop Image */}
         <div className="relative h-[320px] sm:h-[420px] lg:h-[480px] w-full">
           <MovieImage
-            src={movie.backdropPath ? getBackdropUrl(movie.backdropPath, 'original') : null}
+            src={movie.backdropPath ? getBackdropUrl(movie.backdropPath, 'w1280') : null}
             alt={movie.title}
             title={movie.title}
             fill
             priority
             type="backdrop"
+            sizes="100vw"
             className="object-cover object-top opacity-60"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent" />
@@ -234,6 +235,7 @@ export default function MovieDetailsPage() {
               title={movie.title}
               fill
               type="poster"
+              sizes="(max-width: 640px) 176px, 224px"
               className="object-cover"
             />
           </div>
@@ -433,11 +435,13 @@ export default function MovieDetailsPage() {
                   >
                     <div className="relative w-16 h-16 rounded-full overflow-hidden bg-slate-900 border border-slate-700">
                       <MovieImage
-                        src={cast.profilePath ? getTmdbImageUrl(cast.profilePath, 'w300') : null}
+                        src={cast.profilePath ? getTmdbImageUrl(cast.profilePath, 'w185') : null}
                         alt={cast.name}
                         title={cast.name}
                         fill
+                        unoptimized
                         type="avatar"
+                        sizes="64px"
                         className="object-cover"
                       />
                     </div>
@@ -512,9 +516,11 @@ export default function MovieDetailsPage() {
                       {provider.logoPath && (
                         <div className="relative w-5 h-5 rounded-lg overflow-hidden shrink-0">
                           <MovieImage
-                            src={getTmdbImageUrl(provider.logoPath, 'w300')}
+                            src={getTmdbImageUrl(provider.logoPath, 'w92')}
                             alt={provider.providerName}
                             fill
+                            unoptimized
+                            sizes="20px"
                             className="object-cover"
                           />
                         </div>
@@ -541,9 +547,11 @@ export default function MovieDetailsPage() {
                       {provider.logoPath && (
                         <div className="relative w-5 h-5 rounded-lg overflow-hidden shrink-0">
                           <MovieImage
-                            src={getTmdbImageUrl(provider.logoPath, 'w300')}
+                            src={getTmdbImageUrl(provider.logoPath, 'w92')}
                             alt={provider.providerName}
                             fill
+                            unoptimized
+                            sizes="20px"
                             className="object-cover"
                           />
                         </div>
@@ -570,9 +578,11 @@ export default function MovieDetailsPage() {
                       {provider.logoPath && (
                         <div className="relative w-4 h-4 rounded overflow-hidden shrink-0">
                           <MovieImage
-                            src={getTmdbImageUrl(provider.logoPath, 'w300')}
+                            src={getTmdbImageUrl(provider.logoPath, 'w92')}
                             alt={provider.providerName}
                             fill
+                            unoptimized
+                            sizes="16px"
                             className="object-cover"
                           />
                         </div>

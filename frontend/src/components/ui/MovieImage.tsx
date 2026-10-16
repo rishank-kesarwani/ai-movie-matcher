@@ -13,6 +13,8 @@ interface MovieImageProps {
   height?: number;
   sizes?: string;
   priority?: boolean;
+  unoptimized?: boolean;
+  quality?: number;
   className?: string;
   type?: 'poster' | 'backdrop' | 'avatar';
 }
@@ -26,6 +28,8 @@ export function MovieImage({
   height,
   sizes,
   priority = false,
+  unoptimized = false,
+  quality,
   className = '',
   type = 'poster',
 }: MovieImageProps) {
@@ -53,6 +57,17 @@ export function MovieImage({
     );
   }
 
+  // Default accurate sizes for responsive fill images to avoid 100vw fallback
+  const computedSizes =
+    sizes ||
+    (fill
+      ? type === 'backdrop'
+        ? '100vw'
+        : type === 'avatar'
+        ? '64px'
+        : '(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw'
+      : undefined);
+
   return (
     <Image
       src={src}
@@ -60,8 +75,10 @@ export function MovieImage({
       fill={fill}
       width={!fill ? width : undefined}
       height={!fill ? height : undefined}
-      sizes={sizes}
+      sizes={computedSizes}
       priority={priority}
+      unoptimized={unoptimized}
+      quality={quality}
       className={className}
       onError={() => setHasError(true)}
     />

@@ -54,7 +54,7 @@ export function ChatMessageItem({ message }: ChatMessageItemProps) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {movies.map((movie: any, idx: number) => {
                 const targetId = movie.id || movie.tmdbId;
-                const poster = movie.posterPath ? getTmdbImageUrl(movie.posterPath, 'w300') : null;
+                const poster = movie.posterPath ? getTmdbImageUrl(movie.posterPath, 'w185') : null;
 
                 return (
                   <div
@@ -67,7 +67,9 @@ export function ChatMessageItem({ message }: ChatMessageItemProps) {
                         alt={movie.title}
                         title={movie.title}
                         fill
+                        unoptimized
                         type="poster"
+                        sizes="64px"
                         className="object-cover"
                       />
                     </div>

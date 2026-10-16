@@ -3,7 +3,7 @@ export const TMDB_IMAGE_BASE =
 
 export function getTmdbImageUrl(
   path: string | null | undefined,
-  size: 'w300' | 'w500' | 'w780' | 'w1280' | 'original' = 'w500',
+  size: 'w92' | 'w154' | 'w185' | 'w300' | 'w500' | 'w780' | 'w1280' | 'original' = 'w500',
 ): string {
   if (!path) {
     return 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&auto=format&fit=crop&q=60';

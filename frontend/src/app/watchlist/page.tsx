@@ -143,6 +143,7 @@ export default function WatchlistPage() {
                     src={getTmdbImageUrl(item.backdropPath || item.posterPath, 'w780')}
                     alt={item.title}
                     fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-lg bg-slate-950/80 backdrop-blur-md border border-amber-400/30 text-amber-400 text-xs font-bold flex items-center space-x-1">

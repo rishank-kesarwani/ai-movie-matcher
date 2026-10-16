@@ -58,12 +58,13 @@ export function MovieHeroCarousel({ movies }: MovieHeroCarouselProps) {
     <div className="relative w-full h-[420px] sm:h-[500px] lg:h-[560px] rounded-3xl overflow-hidden border border-slate-800/80 shadow-2xl mb-12 group">
       {/* Background Image with Cinematic Overlay Gradients */}
       <MovieImage
-        src={currentMovie.backdropPath ? getBackdropUrl(currentMovie.backdropPath, 'original') : null}
+        src={currentMovie.backdropPath ? getBackdropUrl(currentMovie.backdropPath, 'w1280') : null}
         alt={currentMovie.title}
         title={currentMovie.title}
         fill
         priority
         type="backdrop"
+        sizes="100vw"
         className="object-cover object-center transition-all duration-700 ease-in-out"
       />
 
