@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import { MovieImage } from '../../components/ui/MovieImage';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '../../lib/api-client';
 import { FavoriteItem } from '../../types';
@@ -130,10 +130,12 @@ export default function FavoritesPage() {
                     href={`/movies/${item.itemId}`}
                     className="relative aspect-[16/10] w-full block overflow-hidden bg-slate-900"
                   >
-                    <Image
-                      src={getTmdbImageUrl(item.imagePath, 'w780')}
+                    <MovieImage
+                      src={item.imagePath ? getTmdbImageUrl(item.imagePath, 'w780') : null}
                       alt={item.name}
+                      title={item.name}
                       fill
+                      type="backdrop"
                       sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />

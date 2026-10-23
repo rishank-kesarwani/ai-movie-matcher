@@ -387,6 +387,36 @@ cd frontend && npm test
 
 ---
 
+## 🖼️ Vercel Image Optimization Architecture & Cost Controls
+
+To avoid exceeding Vercel's included monthly allowance of 5,000 Image Optimization transformations across team deployments, this repository enforces a production-grade image delivery strategy:
+
+### 1. Architectural Strategy
+* **Centralized Gatekeeper Component**: All application images render through [`MovieImage.tsx`](frontend/src/components/ui/MovieImage.tsx), which standardizes responsive `sizes`, aspect ratios, and quota fail-safes.
+* **Single Output Format (`image/webp`)**: Configured in `frontend/next.config.mjs` to eliminate duplicate AVIF + WebP transformation pairs for identical viewports.
+* **Extended Edge Cache Lifetime (31 Days)**: `minimumCacheTTL: 2678400` ensures immutable TMDB movie posters remain cached at the Vercel Edge for a full monthly billing cycle instead of expiring after 60 seconds.
+* **Bounded Device & Image Sizes**: Trimmed default 2048px/3840px widths from `deviceSizes` (`[640, 750, 828, 1080, 1200, 1920]`) and clamped `imageSizes` to `[32, 64, 96, 128, 256, 384]`.
+* **Selective Bypassing (`unoptimized`)**:
+  * **Streaming Provider Badges (16px–20px)**: Bypass Vercel optimizer; served directly from TMDB's edge using pre-scaled `w92` assets.
+  * **Cast Circular Avatars (64px)**: Bypass Vercel optimizer; served directly from TMDB using pre-scaled `w185` assets.
+  * **AI Chat Film Thumbnails (64px)**: Bypass Vercel optimizer; served directly from TMDB using `w185` assets.
+  * **Vectors & Icons (SVG)**: SVGs (favicons, UI icons) are delivered statically without raster transformation.
+
+### 2. Quota Exhaustion & Broken Image Prevention
+If the Vercel team monthly quota (5,000 transformations) is fully consumed, new transformations can fail (returning HTTP 402/500). To prevent broken images:
+* **Tier 1 (Optimized Edge Delivery)**: Normal request served via `/_next/image` in WebP.
+* **Tier 2 (Automatic Direct Fallback)**: If `/_next/image` fails or returns an error, `MovieImage`'s error handler automatically re-renders the image with `unoptimized={true}` pointing directly to the original remote CDN URL (`image.tmdb.org`). The asset loads seamlessly without consuming Vercel transformations.
+* **Tier 3 (Polished CSS/SVG Placeholder)**: If the asset is genuinely missing or 404s on TMDB, `MovieImage` renders an elegant dark gradient card with an embedded SVG icon, movie title, and placeholder text with 0 network payload.
+
+### 3. Guidelines for Adding New Assets
+When adding new image components or pages:
+1. **Always use `<MovieImage>`** rather than raw `<Image>` or `<img>`.
+2. **Always define explicit `sizes`**: For example, `sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"` for a 3-column grid card. Never let `fill` images default to `100vw`.
+3. **Use `unoptimized` for assets <= 100px**: If an asset is a tiny thumbnail, logo, or icon, pass `unoptimized` and request TMDB's `w92` or `w185` size directly.
+4. **Avoid 4K/original assets**: Request appropriately bounded source dimensions (e.g. `'w500'` for posters, `'w1280'` for backdrops) rather than `'original'`.
+
+---
+
 ## 👤 Author & Engineering Portfolio
 
 **Rishank Kesarwani**  

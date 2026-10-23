@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
+import { MovieImage } from '../ui/MovieImage';
 import { ScoredRecommendation } from '../../types';
 import { getTmdbImageUrl } from '../../lib/constants';
 import { MatchScoreBadge } from './MatchScoreBadge';
@@ -66,13 +66,19 @@ export function RecommendationCard({
             href={`/movies/${recommendation.movieId}`}
             className="relative aspect-[16/10] w-full block overflow-hidden bg-slate-900"
           >
-            <Image
-              src={getTmdbImageUrl(
-                recommendation.backdropPath || recommendation.posterPath,
-                'w780',
-              )}
+            <MovieImage
+              src={
+                recommendation.backdropPath || recommendation.posterPath
+                  ? getTmdbImageUrl(
+                      recommendation.backdropPath || recommendation.posterPath,
+                      'w780',
+                    )
+                  : null
+              }
               alt={recommendation.title}
+              title={recommendation.title}
               fill
+              type="backdrop"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
             />

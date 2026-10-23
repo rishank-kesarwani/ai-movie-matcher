@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import { MovieImage } from '../../components/ui/MovieImage';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '../../lib/api-client';
 import { WatchlistItem } from '../../types';
@@ -139,10 +139,16 @@ export default function WatchlistPage() {
                   href={`/movies/${item.movieId}`}
                   className="relative aspect-[16/10] w-full block overflow-hidden bg-slate-900"
                 >
-                  <Image
-                    src={getTmdbImageUrl(item.backdropPath || item.posterPath, 'w780')}
+                  <MovieImage
+                    src={
+                      item.backdropPath || item.posterPath
+                        ? getTmdbImageUrl(item.backdropPath || item.posterPath, 'w780')
+                        : null
+                    }
                     alt={item.title}
+                    title={item.title}
                     fill
+                    type="backdrop"
                     sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
